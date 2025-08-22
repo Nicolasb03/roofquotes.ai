@@ -1,7 +1,15 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "roofquotes-ai",
+  "version": "1.0.0",
+  "description": "A modern Next.js application for generating roofing service quotes with Google APIs integration",
   "private": true,
+  "author": "Your Name",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicolasb03/roofquotes.ai.git"
+  },
+  "homepage": "https://github.com/nicolasb03/roofquotes.ai#readme",
+  "keywords": ["roofing", "quotes", "nextjs", "google-apis", "solar", "typescript"],
   "scripts": {
     "build": "next build",
     "dev": "next dev",
