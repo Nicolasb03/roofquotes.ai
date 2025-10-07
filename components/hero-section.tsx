@@ -1,16 +1,13 @@
 "use client"
 
 import { AddressInput } from "@/components/address-input"
-import { useLanguage } from "@/lib/language-context"
 import { Badge } from "@/components/ui/badge"
 import { Calculator, TrendingDown, Shield, Clock, Users, CheckCircle, MapPin, Search } from 'lucide-react'
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 export function HeroSection() {
-  const { t } = useLanguage()
   const router = useRouter()
-
   const [address, setAddress] = useState("")
 
   return (
@@ -32,33 +29,31 @@ export function HeroSection() {
           <div className="text-white text-center lg:text-left order-2 lg:order-1">
             <div className="mb-4 lg:mb-6">
               <Badge className="bg-orange-500 text-white border-orange-500 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium">
-                Comparateur de Prix #1 au Québec
+                #1 Roofing Quote Platform in USA
               </Badge>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 lg:mb-6 leading-tight">
-              Comparez les Prix de
-              <br />
-              <span className="text-orange-400">Toiture</span> en Ligne
+              Get Your AI Roofing Estimate in <span className="text-orange-400">60 Seconds</span>
             </h1>
 
             <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-300 mb-6 lg:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Obtenez des soumissions de plusieurs entrepreneurs certifiés et choisissez la meilleure offre pour votre projet.
+              Instantly analyze your roof using advanced satellite data and get 3 verified contractor quotes without the hassle.
             </p>
 
             {/* Key Benefits - Mobile Optimized */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 lg:mb-8">
               <div className="flex items-center justify-center lg:justify-start space-x-2 sm:space-x-3">
                 <Calculator className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400 flex-shrink-0" />
-                <span className="text-sm sm:text-base font-medium">Estimation Gratuite</span>
+                <span className="text-sm sm:text-base font-medium">Free Estimates</span>
               </div>
               <div className="flex items-center justify-center lg:justify-start space-x-2 sm:space-x-3">
                 <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />
-                <span className="text-sm sm:text-base font-medium">Économisez 30%</span>
+                <span className="text-sm sm:text-base font-medium">Save Up to 30%</span>
               </div>
               <div className="flex items-center justify-center lg:justify-start space-x-2 sm:space-x-3">
                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 flex-shrink-0" />
-                <span className="text-sm sm:text-base font-medium">Entrepreneurs Certifiés</span>
+                <span className="text-sm sm:text-base font-medium">Licensed Contractors</span>
               </div>
             </div>
 
@@ -66,15 +61,15 @@ export function HeroSection() {
             <div className="flex flex-wrap justify-center lg:justify-start items-center gap-3 sm:gap-4 mb-6 lg:mb-8 text-xs sm:text-sm">
               <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-4 sm:py-2">
                 <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
-                <span>Licencié et assuré</span>
+                <span>Licensed & Insured</span>
               </div>
               <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-4 sm:py-2">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
-                <span>Note de 4,9/5</span>
+                <span>4.9/5 Rating</span>
               </div>
               <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-4 sm:py-2">
                 <Users className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400" />
-                <span>50 000+ Comparaisons</span>
+                <span>50,000+ Comparisons</span>
               </div>
             </div>
           </div>
@@ -84,10 +79,10 @@ export function HeroSection() {
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl max-w-md mx-auto lg:mx-0">
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
-                  Entrez votre adresse
+                  Enter your address
                 </h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Obtenez votre estimation en 60 secondes
+                  Get your estimate in 60 seconds
                 </p>
               </div>
 
@@ -100,7 +95,7 @@ export function HeroSection() {
                     }}
                     onAnalyze={() => {
                       if (address.trim()) {
-                        router.push(`/analysis?address=$git {encodeURIComponent(address)}`)
+                        router.push(`/analysis?address=${encodeURIComponent(address)}`)
                       }
                     }}
                     className="w-full"
@@ -120,7 +115,7 @@ export function HeroSection() {
                 >
                   <div className="flex items-center justify-center space-x-2">
                     <Search className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Obtenir mon estimation gratuite</span>
+                    <span>Get My Free Estimate</span>
                   </div>
                 </button>
 
@@ -128,15 +123,15 @@ export function HeroSection() {
                 <div className="space-y-2 sm:space-y-3 pt-2 sm:pt-4">
                   <div className="flex items-center space-x-2 sm:space-x-3 text-green-600">
                     <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm font-medium">Analyse IA de votre toiture</span>
+                    <span className="text-xs sm:text-sm font-medium">AI roof analysis</span>
                   </div>
                   <div className="flex items-center space-x-2 sm:space-x-3 text-green-600">
                     <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm font-medium">Soumissions de 3-5 entrepreneurs</span>
+                    <span className="text-xs sm:text-sm font-medium">3-5 contractor quotes</span>
                   </div>
                   <div className="flex items-center space-x-2 sm:space-x-3 text-green-600">
                     <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm font-medium">Comparaison des prix transparente</span>
+                    <span className="text-xs sm:text-sm font-medium">Transparent price comparison</span>
                   </div>
                 </div>
 
@@ -144,7 +139,7 @@ export function HeroSection() {
                 <div className="flex items-center justify-center space-x-2 pt-3 sm:pt-4 border-t border-gray-100">
                   <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
                   <p className="text-xs sm:text-sm text-gray-500 text-center">
-                    Vos données sont protégées et sécurisées
+                    Your data is protected and secure
                   </p>
                 </div>
               </form>

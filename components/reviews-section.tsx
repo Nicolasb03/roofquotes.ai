@@ -7,21 +7,21 @@ export function ReviewsSection() {
     {
       id: 1,
       name: "Brian Grant Rogers",
-      text: "Reçu trois soumissions et oui j'ai une bonne affaire ! Le bon prix et une exécution parfaite! Merci",
+      text: "Got three quotes and yes I got a great deal! Fair pricing and perfect execution! Thank you",
       rating: 5,
       avatar: "/images/placeholder-user.jpg"
     },
     {
       id: 2,
       name: "Miguel Di Salvia",
-      text: "Simple, pas compliqué. Très sympathique. 100% transparent et disponible. Informations complémentaires. Je le recommande haut la main.",
+      text: "Simple, not complicated. Very friendly. 100% transparent and available. Comprehensive information. I highly recommend them.",
       rating: 5,
       avatar: "/images/placeholder-user.jpg"
     },
     {
       id: 3,
       name: "Julian Budileanu",
-      text: "C'est Super! Avec 0 connaissances en construction, ça a été la façon la plus simple et rapide d'entrer en contact avec les compagnies.",
+      text: "It's Super! With 0 construction knowledge, this was the simplest and fastest way to connect with roofing companies.",
       rating: 5,
       avatar: "/images/placeholder-user.jpg"
     }
@@ -45,10 +45,10 @@ export function ReviewsSection() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Pourquoi les Québécois nous font confiance
+            Why American Homeowners Trust Us
           </h2>
           <p className="text-xl text-gray-200 mb-6">
-            Découvrez ce que nos clients ont à dire sur nos services et notre expertise
+            Discover what our customers have to say about our services and expertise
           </p>
           
           {/* Google Reviews Badge */}
@@ -97,7 +97,7 @@ export function ReviewsSection() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-800">{review.name}</h4>
-                  <p className="text-sm text-gray-500">Client vérifié</p>
+                  <p className="text-sm text-gray-500">Verified Customer</p>
                 </div>
               </div>
             </div>
@@ -108,13 +108,13 @@ export function ReviewsSection() {
         <div className="text-center mt-16">
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-white mb-4">
-              Rejoignez nos clients satisfaits
+              Join Our Satisfied Customers
             </h3>
             <p className="text-gray-200 mb-6">
-              Plus de 1,200+ propriétaires ont fait confiance à notre plateforme pour leurs projets de toiture
+              Over 1,200+ homeowners have trusted our platform for their roofing projects
             </p>
             <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-full transition-colors duration-300 shadow-lg">
-              Obtenir ma soumission gratuite
+              Get My Free Quote
             </button>
           </div>
         </div>

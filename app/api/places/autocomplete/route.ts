@@ -23,17 +23,17 @@ export async function GET(request: NextRequest) {
       ) // Return 200 to avoid breaking the UI
     }
 
-    // Configure for Canadian addresses with bias towards Quebec
+    // Configure for US addresses
     const params = new URLSearchParams({
       input: input,
       key: GOOGLE_API_KEY,
       types: "address",
-      components: "country:ca", // Restrict to Canada
-      language: "fr", // French language for Quebec
-      region: "ca", // Canadian region
-      // Bias towards Quebec coordinates
-      location: "46.8139,-71.2080", // Quebec City coordinates
-      radius: "500000", // 500km radius to cover most of Quebec
+      components: "country:us", // Restrict to United States
+      language: "en", // English language for US
+      region: "us", // US region
+      // Bias towards US center coordinates
+      location: "39.8283,-98.5795", // Geographic center of US
+      radius: "2000000", // 2000km radius to cover entire US
     })
 
     const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?${params}`
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
     if (data.status === "REQUEST_DENIED") {
       console.error("Places API REQUEST_DENIED:", data.error_message)
-      // Return fallback suggestions for common Quebec cities
+      // Return fallback suggestions for common US cities
       const fallbackSuggestions = getFallbackSuggestions(input)
       return NextResponse.json({
         predictions: fallbackSuggestions,
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Filter and format predictions for better Quebec results
+    // Filter and format predictions for better US results
     const predictions = (data.predictions || []).map((prediction: any) => ({
       place_id: prediction.place_id,
       description: prediction.description,
@@ -98,27 +98,42 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Fallback suggestions for common Quebec locations
+// Fallback suggestions for common US locations
 function getFallbackSuggestions(input: string) {
-  const commonQuebecCities = [
-    "Montréal, QC, Canada",
-    "Québec, QC, Canada",
-    "Laval, QC, Canada",
-    "Gatineau, QC, Canada",
-    "Longueuil, QC, Canada",
-    "Sherbrooke, QC, Canada",
-    "Saguenay, QC, Canada",
-    "Lévis, QC, Canada",
-    "Trois-Rivières, QC, Canada",
-    "Terrebonne, QC, Canada",
-    "Saint-Jean-sur-Richelieu, QC, Canada",
-    "Repentigny, QC, Canada",
-    "Brossard, QC, Canada",
-    "Drummondville, QC, Canada",
-    "Saint-Jérôme, QC, Canada",
+  const commonUSCities = [
+    "New York, NY, USA",
+    "Los Angeles, CA, USA",
+    "Chicago, IL, USA",
+    "Houston, TX, USA",
+    "Phoenix, AZ, USA",
+    "Philadelphia, PA, USA",
+    "San Antonio, TX, USA",
+    "San Diego, CA, USA",
+    "Dallas, TX, USA",
+    "San Jose, CA, USA",
+    "Austin, TX, USA",
+    "Jacksonville, FL, USA",
+    "Fort Worth, TX, USA",
+    "Columbus, OH, USA",
+    "Charlotte, NC, USA",
+    "San Francisco, CA, USA",
+    "Indianapolis, IN, USA",
+    "Seattle, WA, USA",
+    "Denver, CO, USA",
+    "Boston, MA, USA",
+    "El Paso, TX, USA",
+    "Nashville, TN, USA",
+    "Detroit, MI, USA",
+    "Oklahoma City, OK, USA",
+    "Portland, OR, USA",
+    "Las Vegas, NV, USA",
+    "Memphis, TN, USA",
+    "Louisville, KY, USA",
+    "Baltimore, MD, USA",
+    "Milwaukee, WI, USA",
   ]
 
-  const filtered = commonQuebecCities
+  const filtered = commonUSCities
     .filter((city) => city.toLowerCase().includes(input.toLowerCase()))
     .slice(0, 5)
     .map((city, index) => ({

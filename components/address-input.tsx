@@ -7,8 +7,6 @@ import { MapPin, Search, ChevronDown, Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useAddressAutocomplete } from "@/hooks/use-address-autocomplete"
-import { useLanguage } from "@/lib/language-context"
-import { translations } from "@/lib/i18n"
 
 interface AddressInputProps {
   onAddressSelect?: (address: string) => void
@@ -23,9 +21,6 @@ export function AddressInput({
   isLoading = false,
   className = "",
 }: AddressInputProps) {
-  const { language } = useLanguage()
-  const t = translations[language]
-
   const [address, setAddress] = useState("")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -140,7 +135,7 @@ export function AddressInput({
           value={address}
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={t.addressPlaceholder}
+          placeholder="Enter your address"
           className="pl-10 pr-12 py-3 text-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
           disabled={isLoading}
         />
@@ -164,7 +159,7 @@ export function AddressInput({
             <div className="px-3 py-2 text-xs text-amber-600 bg-amber-50 border-b border-amber-200">
               <div className="flex items-center gap-1">
                 <Search className="h-3 w-3" />
-                {language === "fr" ? "Suggestions locales (API limitée)" : "Local suggestions (API limited)"}
+                Local suggestions (API limited)
               </div>
             </div>
           )}
@@ -186,7 +181,7 @@ export function AddressInput({
                   )}
                   {prediction.fallback && (
                     <div className="text-xs text-amber-600 mt-1">
-                      {language === "fr" ? "Suggestion locale" : "Local suggestion"}
+                      Local suggestion
                     </div>
                   )}
                 </div>
@@ -206,7 +201,7 @@ export function AddressInput({
       )}
 
       {/* Help text */}
-      <p className="mt-2 text-sm text-gray-600 text-center">{t.addressHelpText}</p>
+      <p className="mt-2 text-sm text-gray-600 text-center">Enter your complete address for accurate roof analysis</p>
     </div>
   )
 }

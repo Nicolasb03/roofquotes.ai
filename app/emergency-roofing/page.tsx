@@ -2,11 +2,11 @@
 
 import { AddressInput } from "@/components/address-input"
 import { Badge } from "@/components/ui/badge"
-import { Calculator, TrendingDown, Shield, Clock, Users, MapPin, CheckCircle, Award } from 'lucide-react'
+import { Calculator, TrendingDown, Shield, Clock, Users, CheckCircle, Award, AlertTriangle } from 'lucide-react'
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
-function LocalRoofingPage() {
+export default function EmergencyRoofingPage() {
   const router = useRouter()
   const [address, setAddress] = useState("")
 
@@ -18,8 +18,8 @@ function LocalRoofingPage() {
           <div className="flex items-center space-x-3">
             <img src="/images/myroofer.png" alt="My Roofer.ai" className="h-[80px] w-auto" />
           </div>
-          <Badge className="bg-orange-500 text-white border-orange-500 px-4 py-2">
-            Local Roofing Service
+          <Badge className="bg-red-500 text-white border-red-500 px-4 py-2">
+            24/7 Emergency Service
           </Badge>
         </div>
       </header>
@@ -41,77 +41,79 @@ function LocalRoofingPage() {
             {/* Left Side - Content */}
             <div className="text-white">
               <div className="mb-6">
-                <Badge className="bg-orange-500 text-white border-orange-500 px-4 py-2 text-sm font-medium">
-                  Local Roofing Contractors
+                <Badge className="bg-red-500 text-white border-red-500 px-4 py-2 text-sm font-medium">
+                  Emergency Roofing Specialists
                 </Badge>
               </div>
 
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
-                Local
+                Emergency
                 <br />
-                <span className="text-orange-400">Roofing</span> Experts
+                <span className="text-red-400">Roof Repair</span> Services
               </h1>
 
               <p className="text-xl lg:text-2xl text-gray-300 mb-8 leading-relaxed">
-                Compare prices from the best local roofing contractors in your area. 
-                Get multiple free quotes in minutes from trusted professionals.
+                Fast emergency roof repair services from certified contractors. Get immediate help for storm damage, leaks, and urgent roofing issues.
               </p>
 
               {/* Key Benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 <div className="flex items-center space-x-3">
-                  <Calculator className="w-6 h-6 text-orange-400 flex-shrink-0" />
-                  <span className="text-sm font-medium">Free Estimates</span>
+                  <Clock className="w-6 h-6 text-red-400 flex-shrink-0" />
+                  <span className="text-sm font-medium">24/7 Response</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <TrendingDown className="w-6 h-6 text-green-400 flex-shrink-0" />
                   <span className="text-sm font-medium">Save Up to 30%</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <MapPin className="w-6 h-6 text-blue-400 flex-shrink-0" />
-                  <span className="text-sm font-medium">Local Contractors</span>
+                  <Award className="w-6 h-6 text-blue-400 flex-shrink-0" />
+                  <span className="text-sm font-medium">Licensed Contractors</span>
                 </div>
               </div>
 
-              {/* Local Trust Indicators */}
+              {/* Trust Indicators */}
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4 text-green-400" />
-                  <span>Licensed & Insured Contractors</span>
+                  <span>100% Free Quotes</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4 text-blue-400" />
-                  <span>5,000+ Local Projects</span>
+                  <Clock className="w-4 h-4 text-blue-400" />
+                  <span>Same-Day Service</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-purple-400" />
-                  <span>Fast Response</span>
+                  <CheckCircle className="w-4 h-4 text-purple-400" />
+                  <span>Insurance Claims Help</span>
                 </div>
               </div>
             </div>
 
             {/* Right Side - Form */}
             <div className="w-full">
-              <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-10 max-w-lg mx-auto">
+              <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-10 max-w-lg mx-auto border-2 border-red-100">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
-                    Local Roofing Contractors
-                  </h2>
+                  <div className="flex items-center justify-center mb-4">
+                    <AlertTriangle className="w-8 h-8 text-red-500 mr-2" />
+                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                      Emergency Roof Repair
+                    </h2>
+                  </div>
                   <p className="text-gray-600">
-                    Compare prices from the best local contractors in your area
+                    Get immediate help from emergency roofing specialists in your area
                   </p>
                 </div>
 
                 {/* Address Input */}
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Enter your address
+                    Enter your address for immediate help
                   </label>
                   <AddressInput
                     onAddressSelect={setAddress}
                     onAnalyze={() => {
                       if (address.trim()) {
-                        router.push(`/analysis?address=${encodeURIComponent(address)}&region=local`)
+                        router.push(`/analysis?address=${encodeURIComponent(address)}&emergency=true`)
                       }
                     }}
                   />
@@ -121,15 +123,15 @@ function LocalRoofingPage() {
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span>Local contractors in your area</span>
+                    <span>AI roof damage assessment</span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span>Knowledge of local climate</span>
+                    <span>Emergency repair specialists</span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span>Competitive local pricing</span>
+                    <span>Insurance claim assistance</span>
                   </div>
                 </div>
 
@@ -137,7 +139,7 @@ function LocalRoofingPage() {
                 <div className="text-center text-xs text-gray-500">
                   <div className="flex items-center justify-center space-x-1 mb-2">
                     <Shield className="w-4 h-4 text-green-500" />
-                    <span>All contractors are licensed and insured</span>
+                    <span>Your information is secure and protected</span>
                   </div>
                   <p>100% free service • No registration required</p>
                 </div>
@@ -148,94 +150,62 @@ function LocalRoofingPage() {
         </div>
       </section>
 
-      {/* Local Advantages Section */}
+      {/* Emergency Services Section */}
       <section className="py-20 px-4 bg-gray-50">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Why Choose Local Roofing Contractors?
+              Emergency Roofing Services We Cover
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Local contractors understand your area's climate and building requirements better than anyone
+              Our network of emergency contractors specializes in all types of urgent roofing repairs
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                title: "Local Climate Knowledge",
-                description: "Expertise in local weather conditions and climate-specific roofing challenges",
+                title: "Storm Damage Repair",
+                description: "Immediate response to wind, hail, and storm damage with emergency tarping and repairs",
                 color: "text-blue-500",
                 bgColor: "bg-blue-50"
               },
               {
-                title: "Fast Availability",
-                description: "Local contractors provide quick response times and personalized service",
+                title: "Leak Detection & Repair",
+                description: "Fast leak detection and emergency sealing to prevent water damage",
                 color: "text-green-500",
                 bgColor: "bg-green-50"
               },
               {
-                title: "Competitive Pricing",
-                description: "Local market rates with no excessive travel fees or markup costs",
-                color: "text-orange-500",
-                bgColor: "bg-orange-50"
-              },
-              {
-                title: "Quality Materials",
-                description: "Selection of materials suited to your local climate and building codes",
+                title: "Missing Shingles",
+                description: "Quick replacement of missing or damaged shingles and roofing materials",
                 color: "text-purple-500",
                 bgColor: "bg-purple-50"
               },
               {
-                title: "Local References",
-                description: "Verifiable references from projects in your neighborhood and community",
+                title: "Gutter Emergencies",
+                description: "Emergency gutter repair and cleaning to prevent water damage",
+                color: "text-orange-500",
+                bgColor: "bg-orange-50"
+              },
+              {
+                title: "Structural Damage",
+                description: "Emergency structural repairs and temporary reinforcement solutions",
                 color: "text-indigo-500",
                 bgColor: "bg-indigo-50"
               },
               {
-                title: "After-Sale Service",
-                description: "Ongoing support and warranties from established local contractors",
+                title: "Tree Damage",
+                description: "Immediate response to tree damage with debris removal and roof repair",
                 color: "text-red-500",
                 bgColor: "bg-red-50"
               }
-            ].map((advantage, index) => (
-              <div key={index} className={`${advantage.bgColor} rounded-2xl p-6 hover:shadow-lg transition-shadow`}>
-                <h3 className={`text-xl font-bold ${advantage.color} mb-3`}>{advantage.title}</h3>
-                <p className="text-gray-600">{advantage.description}</p>
+            ].map((service, index) => (
+              <div key={index} className={`${service.bgColor} rounded-2xl p-6 hover:shadow-lg transition-shadow`}>
+                <h3 className={`text-xl font-bold ${service.color} mb-3`}>{service.title}</h3>
+                <p className="text-gray-600">{service.description}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Local Stats Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Our Local Impact
-            </h2>
-            <p className="text-xl text-gray-600">
-              Real results for homeowners across America
-            </p>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl lg:text-5xl font-bold text-orange-500 mb-3">50,000+</div>
-              <div className="text-gray-600 font-medium">Local Projects</div>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl lg:text-5xl font-bold text-green-500 mb-3">2,500+</div>
-              <div className="text-gray-600 font-medium">Local Contractors</div>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl lg:text-5xl font-bold text-blue-500 mb-3">4.9★</div>
-              <div className="text-gray-600 font-medium">Average Rating</div>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl lg:text-5xl font-bold text-purple-500 mb-3">30%</div>
-              <div className="text-gray-600 font-medium">Average Savings</div>
-            </div>
           </div>
         </div>
       </section>
@@ -244,23 +214,23 @@ function LocalRoofingPage() {
       <section className="py-20 px-4 bg-gray-900 text-white">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            Ready to Compare Local Prices?
+            Need Emergency Roof Repair Now?
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Connect with the best local roofing contractors and save on your project
+            Don't wait - get immediate help from emergency roofing specialists in your area
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <div className="flex items-center space-x-2 text-green-400">
               <CheckCircle className="w-5 h-5" />
-              <span>Licensed Local Contractors</span>
+              <span>24/7 Emergency Response</span>
             </div>
             <div className="flex items-center space-x-2 text-blue-400">
               <CheckCircle className="w-5 h-5" />
-              <span>Competitive Local Pricing</span>
+              <span>Licensed & Insured</span>
             </div>
             <div className="flex items-center space-x-2 text-orange-400">
               <CheckCircle className="w-5 h-5" />
-              <span>100% Free Service</span>
+              <span>Insurance Claims Help</span>
             </div>
           </div>
         </div>
@@ -268,5 +238,3 @@ function LocalRoofingPage() {
     </div>
   )
 }
-
-export default LocalRoofingPage;

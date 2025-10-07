@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
-import { useLanguage } from "@/lib/language-context"
 import { X, Loader2, Shield, Clock, Star, Gift } from 'lucide-react'
 
 interface LeadCapturePopupProps {
@@ -29,7 +28,6 @@ export interface LeadData {
 }
 
 export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = false }: LeadCapturePopupProps) {
-  const { t } = useLanguage()
   const [formData, setFormData] = useState<LeadData>({
     firstName: "",
     lastName: "",
@@ -71,7 +69,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
           <div className="flex items-center justify-between mb-4">
             <Badge className="bg-green-100 text-green-800 border-green-200">
               <Gift className="w-3 h-3 mr-1" />
-              Offre à durée limitée
+              Limited Time Offer
             </Badge>
             {!isSubmitting && (
               <Button variant="ghost" size="sm" onClick={handleClose} className="h-6 w-6 p-0">
@@ -79,9 +77,9 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
               </Button>
             )}
           </div>
-          <DialogTitle className="text-2xl font-bold text-gray-900 mb-2">🎉 Débloquez votre soumission de toit instantanée</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-gray-900 mb-2">Unlock Your Instant Roof Quote</DialogTitle>
           <DialogDescription className="text-gray-600">
-            Obtenez un accès prioritaire aux entrepreneurs certifiés + des informations de prix exclusives
+            Get priority access to certified contractors + exclusive pricing insights
           </DialogDescription>
         </DialogHeader>
 
@@ -89,15 +87,15 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
         <div className="flex flex-wrap justify-center gap-4 py-4 bg-blue-50 rounded-lg mb-6">
           <div className="flex items-center space-x-2 text-sm text-blue-700">
             <Shield className="w-4 h-4" />
-            <span>100% Sécurisé</span>
+            <span>100% Secure</span>
           </div>
           <div className="flex items-center space-x-2 text-sm text-green-700">
             <Clock className="w-4 h-4" />
-            <span>Configuration 60 sec</span>
+            <span>60 sec setup</span>
           </div>
           <div className="flex items-center space-x-2 text-sm text-purple-700">
             <Star className="w-4 h-4" />
-            <span>Accès Premium</span>
+            <span>Premium Access</span>
           </div>
         </div>
 
@@ -106,7 +104,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                {t.firstName} *
+                First Name *
               </Label>
               <Input
                 id="firstName"
@@ -114,13 +112,13 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
                 onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))}
                 disabled={isSubmitting}
                 className="mt-1 border-2 focus:border-blue-500 rounded-lg"
-                placeholder="Jean"
+                placeholder="John"
                 required
               />
             </div>
             <div>
               <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                {t.lastName} *
+                Last Name *
               </Label>
               <Input
                 id="lastName"
@@ -128,7 +126,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
                 onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))}
                 disabled={isSubmitting}
                 className="mt-1 border-2 focus:border-blue-500 rounded-lg"
-                placeholder="Tremblay"
+                placeholder="Smith"
                 required
               />
             </div>
@@ -136,7 +134,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
 
           <div>
             <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-              {t.emailAddress} *
+              Email Address *
             </Label>
             <Input
               id="email"
@@ -145,14 +143,14 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
               disabled={isSubmitting}
               className="mt-1 border-2 focus:border-blue-500 rounded-lg"
-              placeholder="jean@exemple.com"
+              placeholder="john@example.com"
               required
             />
           </div>
 
           <div>
             <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
-              {t.phoneNumber} *
+              Phone Number *
             </Label>
             <Input
               id="phone"
@@ -161,19 +159,19 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
               onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
               disabled={isSubmitting}
               className="mt-1 border-2 focus:border-blue-500 rounded-lg"
-              placeholder="(514) 123-4567"
+              placeholder="(555) 123-4567"
               required
             />
           </div>
 
           {/* Benefits reminder */}
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-100">
-            <h4 className="font-semibold text-gray-900 mb-2">🚀 Ce que vous obtiendrez instantanément :</h4>
+            <h4 className="font-semibold text-gray-900 mb-2">What you'll get instantly:</h4>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>✓ Rapport d'analyse détaillé du toit</li>
-              <li>✓ Estimations de prix précises</li>
-              <li>✓ 3-5 entrepreneurs certifiés jumelés</li>
-              <li>✓ Support client prioritaire</li>
+              <li>Detailed roof analysis report</li>
+              <li>Accurate price estimates</li>
+              <li>3-5 certified contractors matched</li>
+              <li>Priority customer support</li>
             </ul>
           </div>
 
@@ -187,13 +185,13 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
                 className="mt-1"
               />
               <Label htmlFor="terms" className="text-sm leading-relaxed text-gray-600">
-                J'accepte les{" "}
+                I agree to the{" "}
                 <a href="#" className="text-blue-600 hover:underline">
-                  Conditions d'utilisation
+                  Terms of Service
                 </a>{" "}
-                et la{" "}
+                and{" "}
                 <a href="#" className="text-blue-600 hover:underline">
-                  Politique de confidentialité
+                  Privacy Policy
                 </a>{" "}
                 *
               </Label>
@@ -207,7 +205,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
                 className="mt-1"
               />
               <Label htmlFor="contact" className="text-sm leading-relaxed text-gray-600">
-                Je consens à être contacté par des entrepreneurs en toiture qualifiés concernant mon projet *
+                I consent to be contacted by qualified roofing contractors regarding my project *
               </Label>
             </div>
           </div>
@@ -221,7 +219,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
               disabled={isSubmitting}
               className="w-full md:flex-1 border-2 bg-transparent min-w-0"
             >
-              Peut-être plus tard
+              Maybe Later
             </Button>
             <Button
               type="submit"
@@ -231,19 +229,19 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit, isSubmitting = fal
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Génération de la soumission...
+                  Generating Quote...
                 </>
               ) : (
-                <>🎯 Obtenez ma soumission gratuite maintenant</>
+                <>Get My Free Quote Now</>
               )}
             </Button>
           </div>
         </form>
 
         <div className="text-xs text-gray-500 text-center mt-4 flex items-center justify-center space-x-4">
-          <span>🔒 SSL Sécurisé</span>
-          <span>📧 Aucun spam</span>
-          <span>⚡ Résultats instantanés</span>
+          <span>SSL Secured</span>
+          <span>No Spam</span>
+          <span>Instant Results</span>
         </div>
       </DialogContent>
     </Dialog>

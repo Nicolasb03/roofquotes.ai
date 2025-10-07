@@ -8,21 +8,21 @@ import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Soumission Toiture AI - Devis de Toiture Instantanés au Canada",
-  description: "Obtenez une analyse de toit alimentée par l'IA et connectez-vous avec des entrepreneurs locaux certifiés partout au Canada. Soumissions instantanées en 60 secondes.",
+  title: "My Roofer.ai - Instant Roofing Quotes & AI Roof Analysis",
+  description: "Get AI-powered roof analysis and connect with certified local roofing contractors across America. Instant quotes in 60 seconds.",
   generator: 'v0.dev',
   icons: {
     icon: '/favicon.ico',
   },
   viewport: 'width=device-width, initial-scale=1',
-  charset: 'UTF-8',
   openGraph: {
-    title: "Soumission Toiture AI - Devis de Toiture Instantanés au Canada",
-    description: "Obtenez une analyse de toit alimentée par l'IA et connectez-vous avec des entrepreneurs locaux certifiés partout au Canada. Soumissions instantanées en 60 secondes.",
-    url: 'https://soumission-toiture.ai',
-    siteName: 'Soumission Toiture AI',
-    locale: 'fr_CA',
+    title: "My Roofer.ai - Instant Roofing Quotes & AI Roof Analysis",
+    description: "Get AI-powered roof analysis and connect with certified local roofing contractors across America. Instant quotes in 60 seconds.",
+    url: 'https://myroofer.ai',
+    siteName: 'My Roofer.ai',
+    locale: 'en_US',
     type: 'website',
+    images: ['/images/myroofer.png'],
   },
   robots: {
     index: true,
@@ -42,55 +42,41 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "Soumission Toiture AI",
-    "description": "Soumission toiture gratuite au Québec. Réparation toiture urgente 24h, couvreurs certifiés.",
-    "url": "https://soumission-toiture.ai",
-    "telephone": "+1-800-TOITURE",
+    "name": "My Roofer.ai",
+    "description": "Free roofing quotes across America. 24/7 emergency roof repair, certified roofing contractors.",
+    "url": "https://myroofer.ai",
+    "telephone": "+1-800-ROOFERS",
     "priceRange": "$$",
-    "areaServed": [
-      {
-        "@type": "State",
-        "name": "Québec"
-      },
-      {
-        "@type": "City", 
-        "name": "Shawinigan"
-      },
-      {
-        "@type": "City",
-        "name": "Magog" 
-      },
-      {
-        "@type": "City",
-        "name": "Saguenay"
-      }
-    ],
+    "areaServed": {
+      "@type": "Country",
+      "name": "United States"
+    },
     "serviceType": [
-      "Réparation toiture urgente",
-      "Soumission toiture gratuite", 
-      "Estimation toiture",
-      "Couvreur certifié",
-      "Fuite toit urgence",
-      "Infiltration eau toiture"
+      "Emergency roof repair",
+      "Free roofing quotes", 
+      "Roof inspection",
+      "Certified roofing contractors",
+      "Roof leak repair",
+      "Storm damage repair"
     ],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Services de toiture",
+      "name": "Roofing Services",
       "itemListElement": [
         {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "Réparation toiture urgente 24h",
-            "description": "Service d'urgence pour réparation de toit, fuite et infiltration d'eau"
+            "name": "24/7 Emergency Roof Repair",
+            "description": "Emergency service for roof repair, leaks and water damage"
           }
         },
         {
           "@type": "Offer", 
           "itemOffered": {
             "@type": "Service",
-            "name": "Soumission toiture gratuite",
-            "description": "Estimation gratuite et instantanée pour tous travaux de toiture"
+            "name": "Free Roofing Quotes",
+            "description": "Free instant estimates for all roofing projects"
           }
         }
       ]
@@ -103,7 +89,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="fr">
+    <html lang="en">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

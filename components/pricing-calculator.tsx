@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useLanguage } from "@/lib/language-context"
 import { Calculator, DollarSign, TrendingUp, AlertCircle, CheckCircle, Star, Clock } from "lucide-react"
 import type { LeadData } from "@/components/lead-capture-popup"
 
@@ -17,10 +16,11 @@ interface PricingCalculatorProps {
 }
 
 export function PricingCalculator({ roofData, userAnswers, leadData, onComplete }: PricingCalculatorProps) {
-  const { t } = useLanguage()
   const [isCalculating, setIsCalculating] = useState(true)
   const [pricingData, setPricingData] = useState<any>(null)
   const [hasCalculated, setHasCalculated] = useState(false)
+  const [showSellingQuestion, setShowSellingQuestion] = useState(false)
+  const [sellingHouse, setSellingHouse] = useState(null)
 
   useEffect(() => {
     if (hasCalculated || !roofData || !userAnswers) return
@@ -39,7 +39,7 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
             roofData,
             userAnswers,
             leadData,
-            province: "ON",
+            province: "US",
           }),
         })
 
@@ -55,7 +55,7 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
           lowEstimate: Math.round(roofData.roofArea * 8),
           highEstimate: Math.round(roofData.roofArea * 12),
           pricePerSqFt: { low: 8, high: 12 },
-          province: "ON",
+          province: "US",
           complexityScore: 1.3,
           factors: {
             roofComplexity: roofData.pitchComplexity || "moderate",
@@ -74,8 +74,57 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
   }, [roofData, userAnswers, leadData, hasCalculated])
 
   const handleContinue = () => {
-    if (pricingData && onComplete) {
-      onComplete(pricingData)
+    if (!showSellingQuestion) {
+      setShowSellingQuestion(true)
+      return
+    }
+    
+    if (pricingData && sellingHouse !== null) {
+      const enhancedPricing = {
+        ...pricingData,
+        sellingHouse: sellingHouse
+      }
+      onComplete(enhancedPricing)
+    }
+  }
+
+  const handleSellingHouseResponse = async (response: string) => {
+    setSellingHouse(response)
+    
+    try {
+      const sellingHousePayload = {
+        firstName: leadData.firstName,
+        lastName: leadData.lastName,
+        email: leadData.email,
+        phone: leadData.phone,
+        roofData,
+        userAnswers,
+        pricingData: {
+          ...pricingData,
+          sellingHouse: response
+        },
+        webhookType: "selling_house_update" 
+      }
+      
+      console.log('CALLING /api/leads with selling house update:', sellingHousePayload)
+      
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sellingHousePayload),
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        console.log('SELLING HOUSE WEBHOOK SUBMITTED SUCCESSFULLY:', result)
+      } else {
+        console.error('Selling house webhook failed:', response.status)
+      }
+      
+    } catch (error) {
+      console.error('Selling house webhook error:', error)
     }
   }
 
@@ -87,9 +136,9 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Calculator className="w-8 h-8 text-blue-600 animate-pulse" />
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-900">🧠 Analyse IA en cours...</CardTitle>
+            <CardTitle className="text-2xl font-bold text-gray-900">AI Analysis in Progress...</CardTitle>
             <CardDescription className="text-gray-600">
-              Traitement de 47 points de données pour générer votre devis personnalisé
+              Processing 47 data points to generate your personalized quote
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center py-8">
@@ -98,18 +147,18 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center justify-center space-x-2 text-green-600">
                   <CheckCircle className="w-4 h-4" />
-                  <span>Analyse par satellite terminée</span>
+                  <span>Satellite analysis complete</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-blue-600">
                   <Clock className="w-4 h-4 animate-spin" />
-                  <span>Calcul des tarifs du marché</span>
+                  <span>Calculating market rates</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-gray-400">
                   <Calculator className="w-4 h-4" />
-                  <span>Appariement des entrepreneurs</span>
+                  <span>Matching contractors</span>
                 </div>
               </div>
-              <p className="text-gray-500">Cela prend généralement 30-60 secondes...</p>
+              <p className="text-gray-500">This usually takes 30-60 seconds...</p>
             </div>
           </CardContent>
         </Card>
@@ -122,9 +171,9 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
       <div className="max-w-2xl mx-auto">
         <Card className="border-0 shadow-xl">
           <CardContent className="text-center py-12">
-            <p className="text-gray-600 mb-4">Impossible de calculer le prix. Veuillez réessayer.</p>
+            <p className="text-gray-600 mb-4">Unable to calculate pricing. Please try again.</p>
             <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
-              {t.retry}
+              Retry
             </Button>
           </CardContent>
         </Card>
@@ -138,11 +187,11 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
       <div className="text-center">
         <Badge className="mb-4 bg-green-100 text-green-800 border-green-200 px-4 py-2">
           <CheckCircle className="w-4 h-4 mr-2" />
-          Analyse terminée pour {leadData.firstName}
+          Analysis complete for {leadData.firstName}
         </Badge>
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Votre soumission de toiture personnalisée</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Your Personalized Roofing Quote</h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Basée sur l’analyse IA de votre toit de {roofData.roofArea?.toLocaleString()} pi² et les données actuelles du marché
+          Based on AI analysis of your {roofData.roofArea?.toLocaleString()} sq ft roof and current market data
         </p>
       </div>
 
@@ -154,9 +203,9 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
         <CardHeader className="relative z-10">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-3xl font-bold mb-2">Fourchette d’investissement</CardTitle>
+              <CardTitle className="text-3xl font-bold mb-2">Investment Range</CardTitle>
               <CardDescription className="text-blue-100 text-lg">
-                Installation professionnelle au {pricingData.province}
+                Professional installation in the US
               </CardDescription>
             </div>
             <div className="text-right">
@@ -165,7 +214,7 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
                   <Star key={i} className="w-4 h-4 fill-current" />
                 ))}
               </div>
-              <p className="text-sm text-blue-100">Qualité supérieure garantie</p>
+              <p className="text-sm text-blue-100">Premium quality guaranteed</p>
             </div>
           </div>
         </CardHeader>
@@ -177,11 +226,11 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
               {pricingData.highEstimate?.toLocaleString() || "N/A"}
             </div>
             <div className="text-xl text-blue-100">
-              (${pricingData.pricePerSqFt?.low || "N/A"} - ${pricingData.pricePerSqFt?.high || "N/A"} par pi²)
+              (${pricingData.pricePerSqFt?.low || "N/A"} - ${pricingData.pricePerSqFt?.high || "N/A"} per sq ft)
             </div>
             <Badge className="mt-4 bg-white/20 text-white border-white/30 px-4 py-2">
               <TrendingUp className="w-4 h-4 mr-2" />
-              Tarif concurrentiel du marché
+              Competitive market rate
             </Badge>
           </div>
 
@@ -189,9 +238,9 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-6 h-6 text-yellow-300 mt-0.5 flex-shrink-0" />
               <div>
-                <p className="font-semibold mb-2">💡 Conseil tarifaire intelligent</p>
+                <p className="font-semibold mb-2">Smart Pricing Insight</p>
                 <p className="text-sm text-blue-100 leading-relaxed">
-                  Cette estimation inclut des matériaux haut de gamme, une installation professionnelle, les permis et la garantie. Le prix final dépendra des matériaux choisis et des facteurs spécifiques découverts lors de l’inspection.
+                  This estimate includes premium materials, professional installation, permits, and warranty. Final pricing will depend on chosen materials and specific factors discovered during inspection.
                 </p>
               </div>
             </div>
@@ -205,13 +254,13 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Calculator className="w-5 h-5 text-blue-600" />
-              <span>Détail du prix</span>
+              <span>Price Breakdown</span>
             </CardTitle>
-            <CardDescription>Facteurs influençant votre devis</CardDescription>
+            <CardDescription>Factors influencing your quote</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span className="font-medium text-gray-700">Complexité du toit</span>
+              <span className="font-medium text-gray-700">Roof Complexity</span>
               <Badge
                 variant={
                   pricingData.factors?.roofComplexity === "simple"
@@ -226,18 +275,18 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
               </Badge>
             </div>
             <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span className="font-medium text-gray-700">Difficulté d’accès</span>
+              <span className="font-medium text-gray-700">Access Difficulty</span>
               <Badge variant={pricingData.factors?.accessDifficulty === "easy" ? "default" : "secondary"}>
                 {pricingData.factors?.accessDifficulty || "easy"}
               </Badge>
             </div>
             <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span className="font-medium text-gray-700">Âge actuel du toit</span>
+              <span className="font-medium text-gray-700">Current Roof Age</span>
               <span className="font-semibold text-gray-900">{pricingData.factors?.roofAge || "unknown"}</span>
             </div>
             <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span className="font-medium text-gray-700">Conditions particulières</span>
-              <span className="font-semibold text-gray-900">{pricingData.factors?.specialConditions || 0} facteurs</span>
+              <span className="font-medium text-gray-700">Special Conditions</span>
+              <span className="font-semibold text-gray-900">{pricingData.factors?.specialConditions || 0} factors</span>
             </div>
           </CardContent>
         </Card>
@@ -246,25 +295,25 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <CheckCircle className="w-5 h-5 text-green-600" />
-              <span>Qu’est-ce qui est inclus</span>
+              <span>What's Included</span>
             </CardTitle>
-            <CardDescription>Solution complète de toiture</CardDescription>
+            <CardDescription>Complete roofing solution</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
               {[
-                { text: "Matériaux et main-d’œuvre de haute qualité", icon: "✅" },
-                { text: "Permis et inspections", icon: "📋" },
-                { text: "Nettoyage et élimination complets", icon: "🧹" },
-                { text: "Garantie du fabricant", icon: "🛡️" },
-                { text: "Garantie de travail", icon: "⭐" },
-                { text: "Couverture d’assurance", icon: "🏠" },
+                { text: "High-quality materials and labor" },
+                { text: "Permits and inspections" },
+                { text: "Complete cleanup and disposal" },
+                { text: "Manufacturer warranty" },
+                { text: "Workmanship guarantee" },
+                { text: "Insurance coverage" },
               ].map((item, index) => (
                 <li
                   key={index}
                   className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg transition-colors"
                 >
-                  <span className="text-lg">{item.icon}</span>
+                  <CheckCircle className="w-4 h-4 text-green-600" />
                   <span className="text-gray-700">{item.text}</span>
                 </li>
               ))}
@@ -277,9 +326,9 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
       <Card className="border-0 shadow-2xl bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
         <CardContent className="p-8 text-center">
           <div className="mb-6">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">🎯 Prêt à vous connecter avec les entrepreneurs les mieux notés ?</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to Connect with Top-Rated Contractors?</h3>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Obtenez des devis détaillés de 3 à 5 professionnels certifiés dans votre région. Comparez les options et choisissez la meilleure pour votre projet.
+              Get detailed quotes from 3-5 certified professionals in your area. Compare options and choose the best fit for your project.
             </p>
           </div>
 
@@ -288,34 +337,54 @@ export function PricingCalculator({ roofData, userAnswers, leadData, onComplete 
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Star className="w-6 h-6 text-blue-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-1">Entrepreneurs vérifiés</h4>
-              <p className="text-sm text-gray-600">Licenciés, assurés et vérifiés</p>
+              <h4 className="font-semibold text-gray-900 mb-1">Verified Contractors</h4>
+              <p className="text-sm text-gray-600">Licensed, insured, and verified</p>
             </div>
             <div className="text-center p-4 bg-white rounded-xl shadow-sm">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Clock className="w-6 h-6 text-green-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-1">Réponse rapide</h4>
-              <p className="text-sm text-gray-600">Les entrepreneurs vous contactent dans les 24 heures</p>
+              <h4 className="font-semibold text-gray-900 mb-1">Fast Response</h4>
+              <p className="text-sm text-gray-600">Contractors contact you within 24 hours</p>
             </div>
             <div className="text-center p-4 bg-white rounded-xl shadow-sm">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <DollarSign className="w-6 h-6 text-purple-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-1">Meilleure valeur</h4>
-              <p className="text-sm text-gray-600">Comparez plusieurs devis pour économiser de l’argent</p>
+              <h4 className="font-semibold text-gray-900 mb-1">Best Value</h4>
+              <p className="text-sm text-gray-600">Compare multiple quotes to save money</p>
             </div>
           </div>
 
-          <Button
-            size="lg"
-            onClick={handleContinue}
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-          >
-            🚀 Connectez-moi avec les entrepreneurs maintenant
-          </Button>
+          {showSellingQuestion ? (
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">Are you selling your house in the next 12 months?</p>
+              <Button
+                size="lg"
+                onClick={() => handleSellingHouseResponse('yes')}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 mr-4"
+              >
+                Yes
+              </Button>
+              <Button
+                size="lg"
+                onClick={() => handleSellingHouseResponse('no')}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              >
+                No
+              </Button>
+            </div>
+          ) : (
+            <Button
+              size="lg"
+              onClick={handleContinue}
+              className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+            >
+              Connect Me with Contractors Now
+            </Button>
+          )}
           <p className="text-sm text-gray-500 mt-4">
-            ✅ Gratuit pour se connecter • ✅ Aucune obligation • ✅ Vos informations restent privées
+            Free to connect • No obligation • Your information stays private
           </p>
         </CardContent>
       </Card>

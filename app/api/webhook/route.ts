@@ -78,18 +78,24 @@ export async function POST(request: NextRequest) {
       console.warn('⚠️ Meta Conversion API not configured - skipping lead tracking')
     }
 
-    // Prepare webhook payload to match Google Sheets structure
+    // Prepare webhook payload to match Google Sheets structure (exact format from Make.com)
+    const roofConditions = leadData.projectDetails.roofConditions 
+      ? (Array.isArray(leadData.projectDetails.roofConditions) 
+          ? leadData.projectDetails.roofConditions.join(", ") 
+          : leadData.projectDetails.roofConditions)
+      : ""
+    
     const webhookPayload = {
       "Prénom (A)": leadData.contact.firstName,
       "Nom (B)": leadData.contact.lastName,
       "Adresse courriel (C)": leadData.contact.email,
       "Téléphone (D)": leadData.contact.phone,
       "Adresse (E)": leadData.property.address || "",
-      "Code postal (F)": leadData.property.postalCode || "",
+      "Zip code (F)": leadData.property.postalCode || "",
       "Ville (G)": leadData.property.city || "",
       "Superficie du toit (H)": leadData.property.roofArea || 0,
       "Hauteur du bâtiment (I)": leadData.property.buildingHeight || 0,
-      "Condition particulières (J)": leadData.projectDetails.roofMaterial || "",
+      "Condition particulières (J)": roofConditions,
       "Âge du toit (K)": leadData.projectDetails.roofAge || "",
       "Matériau du toit (L)": leadData.projectDetails.roofMaterial || "",
       "Accès (M)": leadData.projectDetails.propertyAccess || "",
@@ -98,7 +104,16 @@ export async function POST(request: NextRequest) {
         : leadData.projectDetails.serviceType || "",
       "Date du projet (O)": leadData.projectDetails.timeline || "",
       "Méthode de contact (P)": leadData.projectDetails.contactPreference || "",
-      "Meilleur moment (Q)": leadData.projectDetails.contactTime || ""
+      "Meilleur moment (Q)": leadData.projectDetails.contactTime || "",
+      "Valeur estimée (R)": leadData.pricingData?.averageEstimate || leadData.pricingData?.highEstimate || 0,
+      "Souhaitez recevoir une estimation pa... (S)": "true",
+      "UTM Source (T)": "fb",
+      "UTM Campaign (U)": "Lead campaign - Par région - Copy",
+      "UTM Content (V)": "Ad 1",
+      "UTM Medium (W)": "paid",
+      "UTM Term (X)": leadData.metadata?.leadId || "",
+      "Lead ID (Y)": leadData.leadId || leadData.metadata?.leadId || "",
+      "Webhook Type (Z)": "initial_contact"
     }
 
     // Get webhook URLs from environment

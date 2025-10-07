@@ -7,24 +7,24 @@ export function FeatureCards() {
   const features = [
     {
       icon: Calculator,
-      title: "Économisez jusqu'à 30%",
-      description: "Comparez les prix de plusieurs entrepreneurs et choisissez la meilleure offre pour votre budget.",
+      title: "Save Up to 30%",
+      description: "Compare prices from multiple contractors and choose the best offer for your budget.",
       color: "text-orange-500",
       bgColor: "bg-orange-50",
       borderColor: "border-orange-200"
     },
     {
       icon: Shield,
-      title: "Entrepreneurs Certifiés",
-      description: "Tous nos partenaires sont licenciés, assurés et ont été vérifiés pour leur expertise.",
+      title: "Licensed Contractors",
+      description: "All our partners are licensed, insured, and verified for their expertise and quality.",
       color: "text-green-500",
       bgColor: "bg-green-50",
       borderColor: "border-green-200"
     },
     {
       icon: TrendingDown,
-      title: "Comparaison Transparente",
-      description: "Recevez des devis détaillés et comparez facilement les services et les prix.",
+      title: "Transparent Comparison",
+      description: "Receive detailed quotes and easily compare services, materials, and pricing.",
       color: "text-blue-500",
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200"
@@ -32,10 +32,10 @@ export function FeatureCards() {
   ]
 
   const stats = [
-    { number: "50,000+", label: "Soumissions générées", color: "text-orange-600" },
-    { number: "1,200+", label: "Clients satisfaits", color: "text-green-600" },
-    { number: "500+", label: "Entrepreneurs partenaires", color: "text-blue-600" },
-    { number: "4.9★", label: "Note moyenne", color: "text-purple-600" }
+    { number: "50,000+", label: "Quotes Generated", color: "text-orange-600" },
+    { number: "1,200+", label: "Satisfied Customers", color: "text-green-600" },
+    { number: "500+", label: "Partner Contractors", color: "text-blue-600" },
+    { number: "4.9★", label: "Average Rating", color: "text-purple-600" }
   ]
 
   return (
@@ -44,10 +44,10 @@ export function FeatureCards() {
         {/* Header - Mobile Optimized */}
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
-            Pourquoi Choisir Notre Plateforme ?
+            Why Choose Our Platform?
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
-            La solution la plus simple et efficace pour comparer les prix de toiture au Québec
+            The simplest and most effective solution to compare roofing prices in America
           </p>
         </div>
 
@@ -79,10 +79,10 @@ export function FeatureCards() {
         <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10">
           <div className="text-center mb-8 sm:mb-10">
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
-              Des Résultats qui Parlent
+              Results That Speak for Themselves
             </h3>
             <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
-              Rejoignez des milliers de propriétaires qui nous font confiance
+              Join thousands of homeowners who trust us with their roofing projects
             </p>
           </div>
 
@@ -105,20 +105,20 @@ export function FeatureCards() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
               <div className="flex items-center space-x-2 text-green-600">
                 <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-sm sm:text-base font-medium">100% Gratuit</span>
+                <span className="text-sm sm:text-base font-medium">100% Free</span>
               </div>
               <div className="flex items-center space-x-2 text-blue-600">
                 <Award className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-sm sm:text-base font-medium">Sans Engagement</span>
+                <span className="text-sm sm:text-base font-medium">No Commitment</span>
               </div>
               <div className="flex items-center space-x-2 text-purple-600">
                 <Users className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-sm sm:text-base font-medium">Résultats en 60s</span>
+                <span className="text-sm sm:text-base font-medium">Results in 60s</span>
               </div>
             </div>
             
             <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl transition-colors duration-300 shadow-lg text-sm sm:text-base">
-              Commencer ma comparaison gratuite
+              Start My Free Comparison
             </button>
           </div>
         </div>

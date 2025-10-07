@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { calculateQuebecPricing, quebecRoofingMaterials } from "@/lib/quebec-pricing-data"
+import { calculateUSStatePricing, extractStateFromAddress, usStatePricing } from "@/lib/us-state-pricing-data"
 
 export async function POST(request: Request) {
   try {
@@ -18,6 +19,12 @@ export async function POST(request: Request) {
       return new NextResponse("Invalid roof area data", { status: 400 })
     }
 
+    // Extract state from address
+    const address = roofData.address || userAnswers.address || ""
+    const stateCode = extractStateFromAddress(address)
+    
+    console.log('[PRICING_POST] Detected state:', stateCode, 'from address:', address)
+
     // Map front-end material choices to internal IDs
     const MATERIAL_MAP: Record<string, string> = {
       asphalt: "asphalt-shingles",
@@ -28,6 +35,17 @@ export async function POST(request: Request) {
       other: "asphalt-shingles", // fallback
       elastomeric: "elastomeric-membrane",
     }
+    
+    // US material type mapping
+    const US_MATERIAL_MAP: Record<string, 'asphalt' | 'metal' | 'membrane' | 'cedar' | 'tile'> = {
+      asphalt: "asphalt",
+      metal: "metal",
+      tile: "tile",
+      cedar: "cedar",
+      slate: "tile",
+      other: "asphalt",
+      elastomeric: "membrane",
+    }
 
     const rawMaterialPref = userAnswers.materialPreference || userAnswers.roofMaterial || ""
 
@@ -35,6 +53,9 @@ export async function POST(request: Request) {
     const materialType =
       MATERIAL_MAP[rawMaterialPref] ||
       (roofData.roofType === "flat" ? "elastomeric-membrane" : "asphalt-shingles")
+    
+    const usMaterialType = US_MATERIAL_MAP[rawMaterialPref] || 
+      (roofData.roofType === "flat" ? "membrane" : "asphalt")
 
     // Calculate complexity factor
     let complexityFactor = 1.0
@@ -57,40 +78,86 @@ export async function POST(request: Request) {
     console.log('[PRICING_POST] Calculation inputs:', {
       roofArea,
       materialType,
+      usMaterialType,
+      stateCode,
       complexityFactor,
       accessFactor,
       conditionFactor
     })
 
-    // Calculate Quebec-specific pricing
-    const quebecPricing = calculateQuebecPricing(
-      roofArea,
-      materialType,
-      complexityFactor,
-      accessFactor,
-      conditionFactor,
-    )
+    // Use US state-based pricing if state detected, otherwise fall back to Quebec pricing
+    let pricing
+    
+    if (stateCode) {
+      // Calculate US state-specific pricing
+      const usPricing = calculateUSStatePricing(
+        roofArea,
+        usMaterialType,
+        stateCode,
+        complexityFactor,
+        accessFactor,
+        conditionFactor
+      )
+      
+      pricing = {
+        lowEstimate: usPricing.lowEstimate,
+        highEstimate: usPricing.highEstimate,
+        pricePerSqFt: usPricing.pricePerSqFt,
+        material: {
+          name: usMaterialType.charAt(0).toUpperCase() + usMaterialType.slice(1),
+          nameFr: usMaterialType.charAt(0).toUpperCase() + usMaterialType.slice(1)
+        },
+        state: usPricing.state,
+        stateCode: stateCode,
+        region: "US",
+        complexityScore: complexityFactor * accessFactor * conditionFactor,
+        factors: {
+          roofComplexity: roofData.pitchComplexity || "moderate",
+          accessDifficulty: userAnswers.propertyAccess || "easy",
+          roofAge: userAnswers.roofAge || "unknown",
+          specialConditions: specialConditions,
+          materialType: usMaterialType,
+        },
+        availableMaterials: [
+          { name: "Asphalt Shingles", type: "asphalt", description: "Most economical, 15-25 years" },
+          { name: "Metal Roofing", type: "metal", description: "Very durable, 40-70 years" },
+          { name: "Flat Roof Membrane", type: "membrane", description: "For flat roofs, 20-30 years" },
+          { name: "Cedar/Wood", type: "cedar", description: "Natural look, 25-30 years" },
+          { name: "Tile", type: "tile", description: "Premium durability, 50+ years" }
+        ]
+      }
+    } else {
+      // Fall back to Quebec pricing
+      const quebecPricing = calculateQuebecPricing(
+        roofArea,
+        materialType,
+        complexityFactor,
+        accessFactor,
+        conditionFactor,
+      )
 
-    const pricing = {
-      lowEstimate: quebecPricing.lowEstimate,
-      highEstimate: quebecPricing.highEstimate,
-      pricePerSqFt: quebecPricing.pricePerSqFt,
-      material: quebecPricing.material,
-      province: "QC",
-      complexityScore: complexityFactor * accessFactor * conditionFactor,
-      factors: {
-        roofComplexity: roofData.pitchComplexity || "moderate",
-        accessDifficulty: userAnswers.propertyAccess || "easy",
-        roofAge: userAnswers.roofAge || "unknown",
-        specialConditions: specialConditions,
-        materialType: quebecPricing.material.nameFr,
-      },
-      availableMaterials: quebecRoofingMaterials.map((m) => ({
-        name: m.nameFr,
-        nameEn: m.nameEn,
-        priceRange: m.priceRange,
-        durability: m.durability,
-      })),
+      pricing = {
+        lowEstimate: quebecPricing.lowEstimate,
+        highEstimate: quebecPricing.highEstimate,
+        pricePerSqFt: quebecPricing.pricePerSqFt,
+        material: quebecPricing.material,
+        province: "QC",
+        region: "CA",
+        complexityScore: complexityFactor * accessFactor * conditionFactor,
+        factors: {
+          roofComplexity: roofData.pitchComplexity || "moderate",
+          accessDifficulty: userAnswers.propertyAccess || "easy",
+          roofAge: userAnswers.roofAge || "unknown",
+          specialConditions: specialConditions,
+          materialType: quebecPricing.material.nameFr,
+        },
+        availableMaterials: quebecRoofingMaterials.map((m) => ({
+          name: m.nameFr,
+          nameEn: m.name,
+          priceRange: m.priceRange,
+          durability: m.durability,
+        })),
+      }
     }
 
     return NextResponse.json(pricing)

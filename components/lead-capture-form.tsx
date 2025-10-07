@@ -5,7 +5,6 @@ import React, { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { useLanguage } from "@/lib/language-context"
 import { CheckCircle, Star, MapPin, Clock, Shield, Trophy, Users } from "lucide-react"
 
 interface LeadCaptureFormProps {
@@ -16,7 +15,6 @@ interface LeadCaptureFormProps {
 }
 
 export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }: LeadCaptureFormProps) {
-  const { t } = useLanguage()
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [pricingData, setPricingData] = useState<any>(null)
@@ -30,13 +28,13 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('� FORM SUBMIT HANDLER CALLED!')
-    console.log('🟢 Event:', e)
-    console.log('🟢 Form data state:', formData)
-    console.log('�🚀 FORM SUBMITTED! Starting lead submission process...')
-    console.log('📝 Form data:', formData)
-    console.log('🏠 Roof data:', roofData)
-    console.log('❓ User answers:', userAnswers)
+    console.log('FORM SUBMIT HANDLER CALLED!')
+    console.log('Event:', e)
+    console.log('Form data state:', formData)
+    console.log('FORM SUBMITTED! Starting lead submission process...')
+    console.log('Form data:', formData)
+    console.log('Roof data:', roofData)
+    console.log('User answers:', userAnswers)
     setIsSubmitting(true)
     setShowForm(false)
     
@@ -52,12 +50,12 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
         pricingData
       }
       
-      console.log('📤 CALLING /api/leads with payload:', leadPayload)
-      console.log('🌐 Current URL:', window.location.href)
+      console.log('CALLING /api/leads with payload:', leadPayload)
+      console.log('Current URL:', window.location.href)
       
       const startTime = Date.now()
       
-      console.log('🚀 About to make fetch request...')
+      console.log('About to make fetch request...')
       
       const response = await fetch('/api/leads', {
         method: 'POST',
@@ -66,39 +64,39 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
         },
         body: JSON.stringify(leadPayload),
       }).catch(fetchError => {
-        console.error('🔥 FETCH ERROR CAUGHT:', fetchError)
-        console.error('🔥 FETCH ERROR TYPE:', typeof fetchError)
-        console.error('🔥 FETCH ERROR MESSAGE:', fetchError.message)
-        console.error('🔥 FETCH ERROR STACK:', fetchError.stack)
+        console.error('FETCH ERROR CAUGHT:', fetchError)
+        console.error('FETCH ERROR TYPE:', typeof fetchError)
+        console.error('FETCH ERROR MESSAGE:', fetchError.message)
+        console.error('FETCH ERROR STACK:', fetchError.stack)
         throw fetchError
       })
       
-      console.log('✅ Fetch completed successfully, got response object')
+      console.log('Fetch completed successfully, got response object')
       
       const endTime = Date.now()
-      console.log(`⏱️ API call took ${endTime - startTime}ms`)
-      console.log('📥 Response status:', response.status)
-      console.log('📥 Response ok:', response.ok)
-      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()))
+      console.log(`API call took ${endTime - startTime}ms`)
+      console.log('Response status:', response.status)
+      console.log('Response ok:', response.ok)
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
       
       if (!response.ok) {
-        console.log('❌ Response not OK, getting error text...')
+        console.log('Response not OK, getting error text...')
         const errorText = await response.text()
-        console.error('❌ API ERROR - Status:', response.status)
-        console.error('❌ API ERROR - Text:', errorText)
+        console.error('API ERROR - Status:', response.status)
+        console.error('API ERROR - Text:', errorText)
         throw new Error(`API call failed: ${response.status}`)
       }
       
-      console.log('✅ Response OK, parsing JSON...')
+      console.log('Response OK, parsing JSON...')
       const result = await response.json()
-      console.log('✅ LEAD SUBMITTED SUCCESSFULLY:', result)
+      console.log('LEAD SUBMITTED SUCCESSFULLY:', result)
       setPricingData(result.pricingData)
       onComplete(result.pricingData)
       setIsSubmitted(true)
       
     } catch (error) {
-      console.error('❌ CRITICAL ERROR submitting lead:', error)
-      console.error('❌ Error details:', {
+      console.error('CRITICAL ERROR submitting lead:', error)
+      console.error('Error details:', {
         message: error.message,
         stack: error.stack,
         name: error.name
@@ -107,7 +105,7 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
       setIsSubmitted(true)
     } finally {
       setIsSubmitting(false)
-      console.log('🏁 Lead submission process COMPLETED')
+      console.log('Lead submission process COMPLETED')
     }
   }
 
@@ -121,21 +119,21 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
   const isFormValid = formData.firstName && formData.lastName && formData.email && formData.phone
   
   // Debug form validation
-  console.log('🔍 FORM VALIDATION DEBUG:')
-  console.log('📝 Form data:', formData)
-  console.log('✅ firstName valid:', !!formData.firstName)
-  console.log('✅ lastName valid:', !!formData.lastName)
-  console.log('✅ email valid:', !!formData.email)
-  console.log('✅ phone valid:', !!formData.phone)
-  console.log('🎯 isFormValid:', isFormValid)
+  console.log('FORM VALIDATION DEBUG:')
+  console.log('Form data:', formData)
+  console.log('firstName valid:', !!formData.firstName)
+  console.log('lastName valid:', !!formData.lastName)
+  console.log('email valid:', !!formData.email)
+  console.log('phone valid:', !!formData.phone)
+  console.log('isFormValid:', isFormValid)
 
   // Show loading state while submitting
   if (isSubmitting) {
     return (
       <div className="max-w-2xl mx-auto text-center py-12">
         <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Envoi en cours...</h2>
-        <p className="text-gray-600">Nous transmettons vos informations aux entrepreneurs</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Submitting...</h2>
+        <p className="text-gray-600">We are sending your information to contractors</p>
       </div>
     )
   }
@@ -145,22 +143,22 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
     return (
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">🎯 Obtenez vos soumissions</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Get Your Free Quotes</h1>
           <p className="text-xl text-gray-600">
-            Entrez vos coordonnées pour recevoir des soumissions personnalisées de nos entrepreneurs certifiés
+            Enter your contact information to receive personalized quotes from our certified contractors
           </p>
         </div>
 
         <Card className="shadow-2xl border-0">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl">Vos informations de contact</CardTitle>
+            <CardTitle className="text-2xl">Your Contact Information</CardTitle>
           </CardHeader>
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Prénom *
+                    First Name *
                   </label>
                   <input
                     type="text"
@@ -169,12 +167,12 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Jean"
+                    placeholder="John"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nom *
+                    Last Name *
                   </label>
                   <input
                     type="text"
@@ -183,7 +181,7 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Dupont"
+                    placeholder="Smith"
                   />
                 </div>
               </div>
@@ -199,13 +197,13 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="jean.dupont@email.com"
+                  placeholder="john.smith@email.com"
                 />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Téléphone *
+                  Phone *
                 </label>
                 <input
                   type="tel"
@@ -214,7 +212,7 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="514-555-0123"
+                  placeholder="(555) 123-4567"
                 />
               </div>
 
@@ -223,11 +221,11 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
                 disabled={!isFormValid}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                🚀 Obtenir mes soumissions gratuites
+                Get Your Free Quotes
               </Button>
               
               <p className="text-sm text-gray-500 text-center">
-                ⚡ Résultats instantanés • 🔒 100% sécurisé • 📞 Aucun appel non sollicité
+                Instant results • 100% secure • No unsolicited calls
               </p>
             </form>
           </CardContent>
@@ -244,63 +242,63 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">🎉 Demande envoyée avec succès!</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Submission Successful!</h1>
           <p className="text-xl text-gray-600">
-            Vos informations ont été transmises aux entrepreneurs. Voici votre estimation personnalisée:
+            Your information has been sent to contractors. Here's your personalized estimate:
           </p>
         </div>
 
         {/* Pricing Results */}
         <Card className="shadow-2xl border-0 mb-8">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-3xl">Votre soumission personnalisée</CardTitle>
-            <p className="text-gray-600">Basée sur l'analyse de votre toit et vos préférences</p>
+            <CardTitle className="text-3xl">Your Personalized Quote</CardTitle>
+            <p className="text-gray-600">Based on your roof analysis and preferences</p>
           </CardHeader>
           <CardContent className="p-8">
             {/* Investment Range */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-xl mb-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">💰 Investissement estimé</h3>
+              <h3 className="text-2xl font-bold mb-4">Estimated Investment</h3>
               <div className="text-5xl font-bold mb-2">
                 ${pricingData.lowEstimate?.toLocaleString()} - ${pricingData.highEstimate?.toLocaleString()}
               </div>
-              <p className="text-blue-100">Installation professionnelle incluse</p>
+              <p className="text-blue-100">Professional installation included</p>
             </div>
 
             {/* Key Details */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="text-center p-6 bg-gray-50 rounded-lg">
                 <div className="text-3xl font-bold text-blue-600">{roofData.roofArea}</div>
-                <div className="text-gray-600">pi² de toiture</div>
+                <div className="text-gray-600">sqft of roof</div>
               </div>
               <div className="text-center p-6 bg-gray-50 rounded-lg">
                 <div className="text-3xl font-bold text-green-600">{pricingData.materialType || 'Standard'}</div>
-                <div className="text-gray-600">Matériau recommandé</div>
+                <div className="text-gray-600">Recommended material</div>
               </div>
               <div className="text-center p-6 bg-gray-50 rounded-lg">
                 <div className="text-3xl font-bold text-purple-600">24-48h</div>
-                <div className="text-gray-600">Délai de réponse</div>
+                <div className="text-gray-600">Response time</div>
               </div>
             </div>
 
             {/* Next Steps */}
             <div className="bg-blue-50 p-6 rounded-lg">
-              <h4 className="text-xl font-bold text-gray-900 mb-4">📋 Prochaines étapes</h4>
+              <h4 className="text-xl font-bold text-gray-900 mb-4">Next Steps</h4>
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                  <span>Les entrepreneurs examineront les détails de votre projet</span>
+                  <span>Contractors will review your project details</span>
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                  <span>Vous recevrez des appels/emails des entrepreneurs intéressés</span>
+                  <span>You'll receive calls/emails from interested contractors</span>
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                  <span>Planifiez des évaluations sur site pour des devis détaillés</span>
+                  <span>Schedule on-site evaluations for detailed quotes</span>
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                  <span>Comparez les devis et choisissez votre entrepreneur préféré</span>
+                  <span>Compare quotes and choose your preferred contractor</span>
                 </li>
               </ul>
             </div>
@@ -310,19 +308,19 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
         {/* Contact Info Confirmation */}
         <Card className="shadow-lg">
           <CardContent className="p-6">
-            <h4 className="text-lg font-bold text-gray-900 mb-4">📞 Vos informations de contact</h4>
+            <h4 className="text-lg font-bold text-gray-900 mb-4">Your Contact Information</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium">Nom:</span> {formData.firstName} {formData.lastName}
+                <span className="font-medium">Name:</span> {formData.firstName} {formData.lastName}
               </div>
               <div>
                 <span className="font-medium">Email:</span> {formData.email}
               </div>
               <div>
-                <span className="font-medium">Téléphone:</span> {formData.phone}
+                <span className="font-medium">Phone:</span> {formData.phone}
               </div>
               <div>
-                <span className="font-medium">Adresse:</span> {roofData.address}
+                <span className="font-medium">Address:</span> {roofData.address}
               </div>
             </div>
           </CardContent>

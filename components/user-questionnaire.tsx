@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { LeadCapturePopup, type LeadData } from "@/components/lead-capture-popup"
-import { useLanguage } from "@/lib/language-context"
 import { CheckCircle, Clock, Zap, AlertCircle } from "lucide-react"
 
 interface UserQuestionnaireProps {
@@ -19,7 +18,6 @@ interface UserQuestionnaireProps {
 }
 
 export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnaireProps) {
-  const { t } = useLanguage()
   const [showLeadCapture, setShowLeadCapture] = useState(false)
   const [isSubmittingLead, setIsSubmittingLead] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
@@ -31,7 +29,6 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
     propertyAccess: "",
     serviceType: [] as string[],
     timeline: "",
-    contactPreference: "",
     contactTime: "",
   })
 
@@ -47,7 +44,7 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
     if (answers.roofConditions.length > 0) completed++
     if (answers.roofAge && answers.roofMaterial && answers.propertyAccess) completed++
     if (answers.serviceType.length > 0) completed++
-    if (answers.timeline && answers.contactPreference && answers.contactTime) completed++
+    if (answers.timeline && answers.contactTime) completed++
     return (completed / 4) * 100
   }
 
@@ -82,14 +79,14 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
 
   const handleLeadSubmit = async (leadData: LeadData) => {
     setIsSubmittingLead(true)
-    console.log('🟢 POPUP FORM SUBMITTED! Starting webhook process...')
-    console.log('📝 Lead data:', leadData)
-    console.log('🏠 Roof data:', roofData)
-    console.log('❓ User answers:', answers)
+    console.log('POPUP FORM SUBMITTED! Starting webhook process...')
+    console.log('Lead data:', leadData)
+    console.log('Roof data:', roofData)
+    console.log('User answers:', answers)
 
     try {
       // First calculate pricing
-      console.log('💰 Calculating pricing first...')
+      console.log('Calculating pricing first...')
       let pricingData = null
       
       try {
@@ -106,9 +103,9 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
         
         if (pricingResponse.ok) {
           pricingData = await pricingResponse.json()
-          console.log('✅ PRICING CALCULATED:', pricingData)
+          console.log('PRICING CALCULATED:', pricingData)
         } else {
-          console.error('❌ Pricing calculation failed, using fallback')
+          console.error('Pricing calculation failed, using fallback')
           // Use fallback pricing if API fails
           pricingData = {
             lowEstimate: roofData.roofArea * 8, // $8 per sq ft
@@ -118,7 +115,7 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
           }
         }
       } catch (pricingError) {
-        console.error('💥 Pricing calculation error, using fallback:', pricingError)
+        console.error('Pricing calculation error, using fallback:', pricingError)
         // Use fallback pricing if request fails
         pricingData = {
           lowEstimate: roofData.roofArea * 8,
@@ -139,7 +136,7 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
         pricingData // Include pricing data in webhook payload
       }
       
-      console.log('📤 CALLING /api/leads with payload (including pricing):', leadPayload)
+      console.log('CALLING /api/leads with payload (including pricing):', leadPayload)
       
       const response = await fetch('/api/leads', {
         method: 'POST',
@@ -149,26 +146,26 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
         body: JSON.stringify(leadPayload),
       })
       
-      console.log('📥 Response status:', response.status)
-      console.log('📥 Response ok:', response.ok)
+      console.log('Response status:', response.status)
+      console.log('Response ok:', response.ok)
       
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('❌ API ERROR - Status:', response.status)
-        console.error('❌ API ERROR - Text:', errorText)
+        console.error('API ERROR - Status:', response.status)
+        console.error('API ERROR - Text:', errorText)
         throw new Error(`API call failed: ${response.status}`)
       }
       
       const result = await response.json()
-      console.log('✅ WEBHOOK SUBMITTED SUCCESSFULLY:', result)
+      console.log('WEBHOOK SUBMITTED SUCCESSFULLY:', result)
       
       setShowLeadCapture(false)
       // Pass answers, leadData, and pricingData to complete the flow
       onComplete(answers, leadData, pricingData)
       
     } catch (error) {
-      console.error('❌ CRITICAL ERROR in popup submission:', error)
-      console.error('❌ Error details:', {
+      console.error('CRITICAL ERROR in popup submission:', error)
+      console.error('Error details:', {
         message: error.message,
         stack: error.stack,
         name: error.name
@@ -184,7 +181,7 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
       onComplete(answers, leadData, fallbackPricing)
     } finally {
       setIsSubmittingLead(false)
-      console.log('🏁 Popup submission process COMPLETED')
+      console.log('Popup submission process COMPLETED')
     }
   }
 
@@ -195,7 +192,6 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
       answers.propertyAccess &&
       answers.serviceType.length > 0 &&
       answers.timeline &&
-      answers.contactPreference &&
       answers.contactTime
     )
   }
@@ -207,11 +203,11 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
         <div className="text-center">
           <Badge className="mb-4 bg-blue-100 text-blue-800 border-blue-200 px-4 py-2">
             <Clock className="w-4 h-4 mr-2" />
-            Étape 2 sur 3 - Presque terminé !
+            Step 2 of 3 - Almost Done!
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">🎯 Parlez-nous de votre projet</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Tell Us About Your Project</h1>
           <p className="text-xl text-gray-600 mb-6">
-            Aidez-nous à vous fournir le prix le plus précis pour vos besoins spécifiques
+            Help us provide the most accurate pricing for your specific needs
           </p>
 
           {/* Enhanced Progress Bar */}
@@ -219,13 +215,13 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span className="flex items-center space-x-1">
                 <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Analysis ✅</span>
+                <span>Analysis</span>
               </span>
               <span className="flex items-center space-x-1">
                 <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
-                <span>Questions 📝</span>
+                <span>Questions</span>
               </span>
-              <span className="text-gray-400">Quotes 🎯</span>
+              <span className="text-gray-400">Quotes</span>
             </div>
             <Progress value={getProgress()} className="h-3 bg-gray-200" />
             <p className="text-sm text-gray-500 mt-2">{Math.round(getProgress())}% Complete</p>
@@ -241,8 +237,8 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                   1
                 </div>
                 <div>
-                  <CardTitle className="text-xl">{t.roofConditions}</CardTitle>
-                  <CardDescription>{t.selectAllThatApply}</CardDescription>
+                  <CardTitle className="text-xl">Roof Conditions</CardTitle>
+                  <CardDescription>Select all that apply</CardDescription>
                 </div>
               </div>
               {answers.roofConditions.length > 0 && (
@@ -256,11 +252,11 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                { key: "treesShading", text: t.treesShading, icon: "🌳" },
-                { key: "multipleLevels", text: t.multipleLevels, icon: "🏠" },
-                { key: "skylightsObstacles", text: t.skylightsObstacles, icon: "🪟" },
-                { key: "steepPitch", text: t.steepPitch, icon: "📐" },
-                { key: "easyAccess", text: t.easyAccess, icon: "🚗" },
+                { key: "treesShading", text: "Trees shading the roof" },
+                { key: "multipleLevels", text: "Multiple roof levels" },
+                { key: "skylightsObstacles", text: "Skylights or obstacles" },
+                { key: "steepPitch", text: "Steep roof pitch" },
+                { key: "easyAccess", text: "Easy street access" },
               ].map((condition) => (
                 <div
                   key={condition.key}
@@ -269,17 +265,18 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                       ? "border-blue-500 bg-blue-50"
                       : "border-gray-200 bg-white hover:border-blue-300"
                   }`}
-                  onClick={() =>
+                  onClick={(e) => {
+                    e.preventDefault()
                     handleConditionChange(condition.text, !answers.roofConditions.includes(condition.text))
-                  }
+                  }}
                 >
                   <Checkbox
                     id={condition.key}
                     checked={answers.roofConditions.includes(condition.text)}
                     onCheckedChange={(checked) => handleConditionChange(condition.text, checked as boolean)}
+                    onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="text-2xl">{condition.icon}</span>
-                  <Label htmlFor={condition.key} className="text-sm font-medium cursor-pointer flex-1">
+                  <Label htmlFor={condition.key} className="text-sm font-medium cursor-pointer flex-1 pointer-events-none">
                     {condition.text}
                   </Label>
                 </div>
@@ -297,8 +294,8 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                   2
                 </div>
                 <div>
-                  <CardTitle className="text-xl">Détails de la propriété</CardTitle>
-                  <CardDescription>Parlez-nous de votre toiture</CardDescription>
+                  <CardTitle className="text-xl">Property Details</CardTitle>
+                  <CardDescription>Tell us about your roof</CardDescription>
                 </div>
               </div>
               {answers.roofAge && answers.roofMaterial && answers.propertyAccess && (
@@ -312,76 +309,94 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <span>🕐</span>
-                  <span>{t.roofAge}</span>
+                <Label className="text-sm font-semibold text-gray-700">
+                  Roof Age
                 </Label>
                 <Select
                   value={answers.roofAge}
                   onValueChange={(value) => setAnswers((prev) => ({ ...prev, roofAge: value }))}
                 >
                   <SelectTrigger className="border-2 focus:border-green-500">
-                    <SelectValue placeholder={t.selectRoofAge} />
+                    <SelectValue placeholder="Select roof age" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="<5">{t.lessThan5}</SelectItem>
-                    <SelectItem value="5-15">{t.years5to15}</SelectItem>
-                    <SelectItem value="15-25">{t.years15to25}</SelectItem>
-                    <SelectItem value=">25">{t.moreThan25}</SelectItem>
-                    <SelectItem value="unknown">{t.notSure}</SelectItem>
+                    <SelectItem value="<5">Less than 5 years</SelectItem>
+                    <SelectItem value="5-15">5-15 years</SelectItem>
+                    <SelectItem value="15-25">15-25 years</SelectItem>
+                    <SelectItem value=">25">More than 25 years</SelectItem>
+                    <SelectItem value="unknown">Not sure</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <span>🏗️</span>
-                  <span>{t.roofMaterial}</span>
+                <Label className="text-sm font-semibold text-gray-700">
+                  Roof Material
                 </Label>
                 <Select
                   value={answers.roofMaterial}
                   onValueChange={(value) => setAnswers((prev) => ({ ...prev, roofMaterial: value }))}
                 >
                   <SelectTrigger className="border-2 focus:border-green-500">
-                    <SelectValue placeholder={t.selectRoofMaterial} />
+                    <SelectValue placeholder="Select roof material" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="asphalt">{t.asphaltShingles}</SelectItem>
-                    <SelectItem value="metal">{t.metal}</SelectItem>
-                    <SelectItem value="tile">{t.tile}</SelectItem>
-                    <SelectItem value="cedar">{t.cedarShakes}</SelectItem>
-                    <SelectItem value="slate">{t.slate}</SelectItem>
-                    <SelectItem value="other">{t.other}</SelectItem>
+                    <SelectItem value="asphalt">Asphalt shingles</SelectItem>
+                    <SelectItem value="metal">Metal</SelectItem>
+                    <SelectItem value="tile">Tile</SelectItem>
+                    <SelectItem value="cedar">Cedar shakes</SelectItem>
+                    <SelectItem value="slate">Slate</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <span>🚗</span>
-                  <span>{t.propertyAccess}</span>
+                <Label className="text-sm font-semibold text-gray-700">
+                  Property Access
                 </Label>
                 <RadioGroup
                   value={answers.propertyAccess}
                   onValueChange={(value) => setAnswers((prev) => ({ ...prev, propertyAccess: value }))}
                   className="space-y-2"
                 >
-                  <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-50">
-                    <RadioGroupItem value="easy" id="easy" />
-                    <Label htmlFor="easy" className="text-sm cursor-pointer">
-                      {t.easyStreetAccess}
+                  <div 
+                    className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer border-2 transition-all ${
+                      answers.propertyAccess === "easy" 
+                        ? "bg-green-50 border-green-500" 
+                        : "border-transparent hover:bg-green-50 hover:border-green-200"
+                    }`}
+                    onClick={() => setAnswers((prev) => ({ ...prev, propertyAccess: "easy" }))}
+                  >
+                    <RadioGroupItem value="easy" id="easy" onClick={(e) => e.stopPropagation()} />
+                    <Label htmlFor="easy" className="text-sm cursor-pointer flex-1 pointer-events-none">
+                      Easy street access
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-50">
-                    <RadioGroupItem value="narrow" id="narrow" />
-                    <Label htmlFor="narrow" className="text-sm cursor-pointer">
-                      {t.narrowDriveway}
+                  <div 
+                    className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer border-2 transition-all ${
+                      answers.propertyAccess === "narrow" 
+                        ? "bg-green-50 border-green-500" 
+                        : "border-transparent hover:bg-green-50 hover:border-green-200"
+                    }`}
+                    onClick={() => setAnswers((prev) => ({ ...prev, propertyAccess: "narrow" }))}
+                  >
+                    <RadioGroupItem value="narrow" id="narrow" onClick={(e) => e.stopPropagation()} />
+                    <Label htmlFor="narrow" className="text-sm cursor-pointer flex-1 pointer-events-none">
+                      Narrow driveway
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-50">
-                    <RadioGroupItem value="difficult" id="difficult" />
-                    <Label htmlFor="difficult" className="text-sm cursor-pointer">
-                      {t.difficultAccess}
+                  <div 
+                    className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer border-2 transition-all ${
+                      answers.propertyAccess === "difficult" 
+                        ? "bg-green-50 border-green-500" 
+                        : "border-transparent hover:bg-green-50 hover:border-green-200"
+                    }`}
+                    onClick={() => setAnswers((prev) => ({ ...prev, propertyAccess: "difficult" }))}
+                  >
+                    <RadioGroupItem value="difficult" id="difficult" onClick={(e) => e.stopPropagation()} />
+                    <Label htmlFor="difficult" className="text-sm cursor-pointer flex-1 pointer-events-none">
+                      Difficult access
                     </Label>
                   </div>
                 </RadioGroup>
@@ -399,8 +414,8 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                   3
                 </div>
                 <div>
-                  <CardTitle className="text-xl">{t.serviceType}</CardTitle>
-                  <CardDescription>{t.servicesInterested}</CardDescription>
+                  <CardTitle className="text-xl">Service Type</CardTitle>
+                  <CardDescription>What services are you interested in?</CardDescription>
                 </div>
               </div>
               {answers.serviceType.length > 0 && (
@@ -414,11 +429,11 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                { key: "completeReplacement", text: t.completeReplacement, icon: "🏠", popular: true },
-                { key: "roofRepair", text: t.roofRepair, icon: "🔧" },
-                { key: "roofInspection", text: t.roofInspection, icon: "🔍" },
-                { key: "gutterWork", text: t.gutterWork, icon: "🌧️" },
-                { key: "justEstimates", text: t.justEstimates, icon: "📊" },
+                { key: "completeReplacement", text: "Complete roof replacement", popular: true },
+                { key: "roofRepair", text: "Roof repair" },
+                { key: "roofInspection", text: "Roof inspection" },
+                { key: "gutterWork", text: "Gutter work" },
+                { key: "justEstimates", text: "Just estimates" },
               ].map((service) => (
                 <div
                   key={service.key}
@@ -427,18 +442,21 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                       ? "border-purple-500 bg-purple-50"
                       : "border-gray-200 bg-white hover:border-purple-300"
                   }`}
-                  onClick={() => handleServiceChange(service.text, !answers.serviceType.includes(service.text))}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleServiceChange(service.text, !answers.serviceType.includes(service.text))
+                  }}
                 >
                   {service.popular && (
-                    <Badge className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs">Most Popular</Badge>
+                    <Badge className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs pointer-events-none">Most Popular</Badge>
                   )}
                   <Checkbox
                     id={service.key}
                     checked={answers.serviceType.includes(service.text)}
                     onCheckedChange={(checked) => handleServiceChange(service.text, checked as boolean)}
+                    onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="text-2xl">{service.icon}</span>
-                  <Label htmlFor={service.key} className="text-sm font-medium cursor-pointer flex-1">
+                  <Label htmlFor={service.key} className="text-sm font-medium cursor-pointer flex-1 pointer-events-none">
                     {service.text}
                   </Label>
                 </div>
@@ -456,11 +474,11 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                   4
                 </div>
                 <div>
-                  <CardTitle className="text-xl">Préférences de contact</CardTitle>
-                  <CardDescription>Quand et comment les entreprises devraient-elles vous contacter ?</CardDescription>
+                  <CardTitle className="text-xl">Timeline & Contact</CardTitle>
+                  <CardDescription>When should contractors contact you?</CardDescription>
                 </div>
               </div>
-              {answers.timeline && answers.contactPreference && answers.contactTime && (
+              {answers.timeline && answers.contactTime && (
                 <Badge className="bg-green-100 text-green-800">
                   <CheckCircle className="w-3 h-3 mr-1" />
                   Complete
@@ -471,9 +489,8 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <span>⏰</span>
-                  <span>{t.timeline}</span>
+                <Label className="text-sm font-semibold text-gray-700">
+                  Timeline
                 </Label>
                 <RadioGroup
                   value={answers.timeline}
@@ -481,18 +498,22 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                   className="space-y-2"
                 >
                   {[
-                    { value: "urgent", text: t.urgent, icon: "🚨" },
-                    { value: "soon", text: t.soon, icon: "📅" },
-                    { value: "planning", text: t.planning, icon: "📋" },
-                    { value: "exploring", text: t.exploring, icon: "🔍" },
+                    { value: "urgent", text: "Urgent (ASAP)" },
+                    { value: "soon", text: "Within 1-2 months" },
+                    { value: "planning", text: "Planning ahead (3-6 months)" },
+                    { value: "exploring", text: "Just exploring options" },
                   ].map((option) => (
                     <div
                       key={option.value}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 border border-transparent hover:border-orange-200"
+                      className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer border-2 transition-all ${
+                        answers.timeline === option.value
+                          ? "bg-orange-50 border-orange-500"
+                          : "border-transparent hover:bg-orange-50 hover:border-orange-200"
+                      }`}
+                      onClick={() => setAnswers((prev) => ({ ...prev, timeline: option.value }))}
                     >
-                      <RadioGroupItem value={option.value} id={option.value} />
-                      <span className="text-lg">{option.icon}</span>
-                      <Label htmlFor={option.value} className="text-sm cursor-pointer flex-1">
+                      <RadioGroupItem value={option.value} id={option.value} onClick={(e) => e.stopPropagation()} />
+                      <Label htmlFor={option.value} className="text-sm cursor-pointer flex-1 pointer-events-none">
                         {option.text}
                       </Label>
                     </div>
@@ -501,38 +522,8 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
               </div>
 
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <span>📞</span>
-                  <span>{t.contactMethod}</span>
-                </Label>
-                <RadioGroup
-                  value={answers.contactPreference}
-                  onValueChange={(value) => setAnswers((prev) => ({ ...prev, contactPreference: value }))}
-                  className="space-y-2"
-                >
-                  {[
-                    { value: "phone", text: t.phone, icon: "📞" },
-                    { value: "email", text: t.email, icon: "📧" },
-                    { value: "text", text: t.text, icon: "💬" },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 border border-transparent hover:border-orange-200"
-                    >
-                      <RadioGroupItem value={option.value} id={`contact-${option.value}`} />
-                      <span className="text-lg">{option.icon}</span>
-                      <Label htmlFor={`contact-${option.value}`} className="text-sm cursor-pointer flex-1">
-                        {option.text}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <span>🕐</span>
-                  <span>{t.bestTime}</span>
+                <Label className="text-sm font-semibold text-gray-700">
+                  Best Time to Contact
                 </Label>
                 <RadioGroup
                   value={answers.contactTime}
@@ -540,18 +531,22 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
                   className="space-y-2"
                 >
                   {[
-                    { value: "morning", text: t.morning, icon: "🌅" },
-                    { value: "afternoon", text: t.afternoon, icon: "☀️" },
-                    { value: "evening", text: t.evening, icon: "🌆" },
-                    { value: "anytime", text: t.anytime, icon: "⏰" },
+                    { value: "morning", text: "Morning (8AM-12PM)" },
+                    { value: "afternoon", text: "Afternoon (12PM-5PM)" },
+                    { value: "evening", text: "Evening (5PM-8PM)" },
+                    { value: "anytime", text: "Anytime" },
                   ].map((option) => (
                     <div
                       key={option.value}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 border border-transparent hover:border-orange-200"
+                      className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer border-2 transition-all ${
+                        answers.contactTime === option.value
+                          ? "bg-orange-50 border-orange-500"
+                          : "border-transparent hover:bg-orange-50 hover:border-orange-200"
+                      }`}
+                      onClick={() => setAnswers((prev) => ({ ...prev, contactTime: option.value }))}
                     >
-                      <RadioGroupItem value={option.value} id={`time-${option.value}`} />
-                      <span className="text-lg">{option.icon}</span>
-                      <Label htmlFor={`time-${option.value}`} className="text-sm cursor-pointer flex-1">
+                      <RadioGroupItem value={option.value} id={`time-${option.value}`} onClick={(e) => e.stopPropagation()} />
+                      <Label htmlFor={`time-${option.value}`} className="text-sm cursor-pointer flex-1 pointer-events-none">
                         {option.text}
                       </Label>
                     </div>
@@ -566,14 +561,14 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
         <Card className="border-0 shadow-2xl bg-gradient-to-r from-green-600 to-blue-600 text-white">
           <CardContent className="p-8 text-center">
             <div className="mb-6">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">🎉 Vous êtes presque terminé !</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">You're Almost Done!</h2>
               <p className="text-xl text-blue-100 mb-4">
-                Obtenez votre devis personnalisé et connectez-vous avec les entreprises les mieux notées
+                Get your personalized quote and connect with top-rated contractors
               </p>
               {!isFormValid() && (
                 <div className="flex items-center justify-center space-x-2 text-yellow-200">
                   <AlertCircle className="w-5 h-5" />
-                  <span className="text-sm">Veuillez remplir tous les champs requis ci-dessus</span>
+                  <span className="text-sm">Please complete all required fields above</span>
                 </div>
               )}
             </div>
@@ -585,10 +580,10 @@ export function UserQuestionnaire({ roofData, onComplete }: UserQuestionnairePro
               className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               <Zap className="w-6 h-6 mr-3" />
-              {isFormValid() ? "🚀 Obtenir mon devis personnalisé" : "Compléter le formulaire pour continuer"}
+              {isFormValid() ? "Get My Personalized Quote" : "Complete Form to Continue"}
             </Button>
             <p className="text-sm text-blue-100 mt-4">
-              ⚡ Résultats instantanés • 🔒 100% sécurisé • 📞 Aucun appel non sollicité
+              Instant results • 100% secure • No spam calls
             </p>
           </CardContent>
         </Card>

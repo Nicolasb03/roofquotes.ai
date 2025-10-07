@@ -9,7 +9,6 @@ import { LeadCaptureForm } from "@/components/lead-capture-form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft, MapPin, Zap, Clock, CheckCircle } from 'lucide-react'
 import Link from "next/link"
 import type { LeadData } from "@/components/lead-capture-popup"
@@ -17,7 +16,6 @@ import type { LeadData } from "@/components/lead-capture-popup"
 type AnalysisStep = "loading" | "results" | "questionnaire" | "lead-capture" | "pricing"
 
 export default function AnalysisPage() {
-  const { t } = useLanguage()
   const searchParams = useSearchParams()
 
   // State declarations need to come before effects to avoid TDZ errors
@@ -155,7 +153,7 @@ export default function AnalysisPage() {
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
                 <ArrowLeft className="w-5 h-5" />
               </div>
-              <span className="font-medium">{t.backToHome}</span>
+              <span className="font-medium">Back to Home</span>
             </Link>
 
             <div className="flex items-center space-x-4">
@@ -173,11 +171,11 @@ export default function AnalysisPage() {
           {/* Enhanced Progress Bar */}
           <div className="mt-4">
             <div className="flex justify-between text-xs text-gray-600 mb-2">
-              <span className={currentStep === "loading" ? "text-blue-600 font-medium" : ""}>🔍 Analysis</span>
-              <span className={currentStep === "results" ? "text-blue-600 font-medium" : ""}>📊 Results</span>
-              <span className={currentStep === "questionnaire" ? "text-blue-600 font-medium" : ""}>📝 Questions</span>
-              <span className={currentStep === "lead-capture" ? "text-blue-600 font-medium" : ""}>🎯 Connect</span>
-              <span className={currentStep === "pricing" ? "text-blue-600 font-medium" : ""}>💰 Pricing</span>
+              <span className={currentStep === "loading" ? "text-blue-600 font-medium" : ""}>Analysis</span>
+              <span className={currentStep === "results" ? "text-blue-600 font-medium" : ""}>Results</span>
+              <span className={currentStep === "questionnaire" ? "text-blue-600 font-medium" : ""}>Questions</span>
+              <span className={currentStep === "lead-capture" ? "text-blue-600 font-medium" : ""}>Connect</span>
+              <span className={currentStep === "pricing" ? "text-blue-600 font-medium" : ""}>Pricing</span>
             </div>
             <Progress value={getStepProgress()} className="h-3 bg-gray-200" />
             <p className="text-xs text-gray-500 mt-1 text-center">{stepInfo.subtitle}</p>
@@ -192,7 +190,7 @@ export default function AnalysisPage() {
               <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
               </div>
-              <CardTitle className="text-3xl font-bold text-gray-900 mb-2">🧠 AI Analyzing Your Roof...</CardTitle>
+              <CardTitle className="text-3xl font-bold text-gray-900 mb-2">AI Analyzing Your Roof...</CardTitle>
               <p className="text-gray-600 text-lg">Processing satellite imagery and market data</p>
             </CardHeader>
             <CardContent className="text-center py-8">
@@ -213,7 +211,7 @@ export default function AnalysisPage() {
                 </div>
                 <div className="bg-white rounded-xl p-6 border border-blue-100">
                   <p className="text-gray-600 mb-2">
-                    🚀 <strong>Advanced AI Technology</strong>
+                    <strong>Advanced AI Technology</strong>
                   </p>
                   <p className="text-sm text-gray-500">
                     Our system analyzes 47+ data points including roof pitch, obstacles, access difficulty, and local
@@ -244,63 +242,71 @@ export default function AnalysisPage() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">🎉 Demande envoyée avec succès!</h1>
-              <p className="text-xl text-gray-600">
-                Vos informations ont été transmises aux entrepreneurs. Voici votre estimation personnalisée:
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Request Sent Successfully!</h1>
+              <p className="text-xl text-gray-600 mb-6">
+                Your information has been sent to contractors. Here's your personalized estimate:
               </p>
+              
+              {/* CTA Button */}
+              <Link 
+                href="/"
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              >
+                Get 3 Precise Quotes from Local Roofers
+              </Link>
             </div>
 
             {/* Pricing Results */}
             <Card className="shadow-2xl border-0 mb-8">
               <CardHeader className="text-center pb-4">
-                <CardTitle className="text-3xl">Votre soumission personnalisée</CardTitle>
-                <p className="text-gray-600">Basée sur l'analyse de votre toit et vos préférences</p>
+                <CardTitle className="text-3xl">Your Personalized Quote</CardTitle>
+                <p className="text-gray-600">Based on your roof analysis and preferences</p>
               </CardHeader>
               <CardContent className="p-8">
                 {/* Investment Range */}
                 <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-xl mb-8 text-center">
-                  <h3 className="text-2xl font-bold mb-4">💰 Investissement estimé</h3>
+                  <h3 className="text-2xl font-bold mb-4">Estimated Investment</h3>
                   <div className="text-5xl font-bold mb-2">
                     ${pricingData.lowEstimate?.toLocaleString()} - ${pricingData.highEstimate?.toLocaleString()}
                   </div>
-                  <p className="text-blue-100">Installation professionnelle incluse</p>
+                  <p className="text-blue-100">Professional installation included</p>
                 </div>
 
                 {/* Key Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="text-center p-6 bg-gray-50 rounded-lg">
                     <div className="text-3xl font-bold text-blue-600">{roofData.roofArea}</div>
-                    <div className="text-gray-600">pi² de toiture</div>
+                    <div className="text-gray-600">sq ft of roofing</div>
                   </div>
                   <div className="text-center p-6 bg-gray-50 rounded-lg">
                     <div className="text-3xl font-bold text-green-600">{pricingData.materialType || 'Standard'}</div>
-                    <div className="text-gray-600">Matériau recommandé</div>
+                    <div className="text-gray-600">Recommended material</div>
                   </div>
                   <div className="text-center p-6 bg-gray-50 rounded-lg">
                     <div className="text-3xl font-bold text-purple-600">24-48h</div>
-                    <div className="text-gray-600">Délai de réponse</div>
+                    <div className="text-gray-600">Response time</div>
                   </div>
                 </div>
 
                 {/* Next Steps */}
                 <div className="bg-blue-50 p-6 rounded-lg">
-                  <h4 className="text-xl font-bold text-gray-900 mb-4">📋 Prochaines étapes</h4>
+                  <h4 className="text-xl font-bold text-gray-900 mb-4">Next Steps</h4>
                   <ul className="space-y-2">
                     <li className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span>Les entrepreneurs examineront les détails de votre projet</span>
+                      <span>Contractors will review your project details</span>
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span>Vous recevrez des appels/emails des entrepreneurs intéressés</span>
+                      <span>You'll receive calls/emails from interested contractors</span>
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span>Planifiez des évaluations sur site pour des devis détaillés</span>
+                      <span>Schedule on-site evaluations for detailed quotes</span>
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-                      <span>Comparez les devis et choisissez votre entrepreneur préféré</span>
+                      <span>Compare quotes and choose your preferred contractor</span>
                     </li>
                   </ul>
                 </div>
@@ -310,19 +316,19 @@ export default function AnalysisPage() {
             {/* Contact Info Confirmation */}
             <Card className="shadow-lg">
               <CardContent className="p-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-4">📞 Vos informations de contact</h4>
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Your Contact Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="font-medium">Nom:</span> {leadData?.firstName} {leadData?.lastName}
+                    <span className="font-medium">Name:</span> {leadData?.firstName} {leadData?.lastName}
                   </div>
                   <div>
                     <span className="font-medium">Email:</span> {leadData?.email}
                   </div>
                   <div>
-                    <span className="font-medium">Téléphone:</span> {leadData?.phone}
+                    <span className="font-medium">Phone:</span> {leadData?.phone}
                   </div>
                   <div>
-                    <span className="font-medium">Adresse:</span> {roofData.address}
+                    <span className="font-medium">Address:</span> {roofData.address}
                   </div>
                 </div>
               </CardContent>

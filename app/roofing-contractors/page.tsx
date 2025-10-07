@@ -6,7 +6,7 @@ import { Calculator, TrendingDown, Shield, Clock, Users, MapPin, CheckCircle, Aw
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
-function LocalRoofingPage() {
+function RoofingContractorsPage() {
   const router = useRouter()
   const [address, setAddress] = useState("")
 
@@ -19,7 +19,7 @@ function LocalRoofingPage() {
             <img src="/images/myroofer.png" alt="My Roofer.ai" className="h-[80px] w-auto" />
           </div>
           <Badge className="bg-orange-500 text-white border-orange-500 px-4 py-2">
-            Local Roofing Service
+            #1 Roofing Platform in USA
           </Badge>
         </div>
       </header>
@@ -42,19 +42,19 @@ function LocalRoofingPage() {
             <div className="text-white">
               <div className="mb-6">
                 <Badge className="bg-orange-500 text-white border-orange-500 px-4 py-2 text-sm font-medium">
-                  Local Roofing Contractors
+                  Trusted Local Contractors
                 </Badge>
               </div>
 
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
-                Local
+                Find Top
                 <br />
-                <span className="text-orange-400">Roofing</span> Experts
+                <span className="text-orange-400">Roofing</span> Contractors
               </h1>
 
               <p className="text-xl lg:text-2xl text-gray-300 mb-8 leading-relaxed">
-                Compare prices from the best local roofing contractors in your area. 
-                Get multiple free quotes in minutes from trusted professionals.
+                Compare quotes from the best roofing contractors in your area. 
+                Get multiple free estimates in minutes from licensed professionals.
               </p>
 
               {/* Key Benefits */}
@@ -73,19 +73,19 @@ function LocalRoofingPage() {
                 </div>
               </div>
 
-              {/* Local Trust Indicators */}
+              {/* Trust Indicators */}
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4 text-green-400" />
-                  <span>Licensed & Insured Contractors</span>
+                  <span>Licensed & Insured</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4 text-blue-400" />
-                  <span>5,000+ Local Projects</span>
+                  <span>10,000+ Completed Projects</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Clock className="w-4 h-4 text-purple-400" />
-                  <span>Fast Response</span>
+                  <span>Quick Response</span>
                 </div>
               </div>
             </div>
@@ -95,10 +95,10 @@ function LocalRoofingPage() {
               <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-10 max-w-lg mx-auto">
                 <div className="text-center mb-8">
                   <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
-                    Local Roofing Contractors
+                    Get Free Roofing Quotes
                   </h2>
                   <p className="text-gray-600">
-                    Compare prices from the best local contractors in your area
+                    Compare prices from the best local roofing contractors
                   </p>
                 </div>
 
@@ -111,7 +111,7 @@ function LocalRoofingPage() {
                     onAddressSelect={setAddress}
                     onAnalyze={() => {
                       if (address.trim()) {
-                        router.push(`/analysis?address=${encodeURIComponent(address)}&region=local`)
+                        router.push(`/analysis?address=${encodeURIComponent(address)}`)
                       }
                     }}
                   />
@@ -121,15 +121,15 @@ function LocalRoofingPage() {
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span>Local contractors in your area</span>
+                    <span>Licensed local contractors</span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span>Knowledge of local climate</span>
+                    <span>AI-powered roof analysis</span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span>Competitive local pricing</span>
+                    <span>Competitive pricing guaranteed</span>
                   </div>
                 </div>
 
@@ -148,7 +148,7 @@ function LocalRoofingPage() {
         </div>
       </section>
 
-      {/* Local Advantages Section */}
+      {/* Why Choose Local Section */}
       <section className="py-20 px-4 bg-gray-50">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
@@ -156,45 +156,45 @@ function LocalRoofingPage() {
               Why Choose Local Roofing Contractors?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Local contractors understand your area's climate and building requirements better than anyone
+              Local contractors understand your area's climate, building codes, and provide personalized service
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                title: "Local Climate Knowledge",
-                description: "Expertise in local weather conditions and climate-specific roofing challenges",
+                title: "Local Climate Expertise",
+                description: "Deep understanding of your area's weather patterns and roofing challenges",
                 color: "text-blue-500",
                 bgColor: "bg-blue-50"
               },
               {
-                title: "Fast Availability",
-                description: "Local contractors provide quick response times and personalized service",
+                title: "Quick Response Time",
+                description: "Fast service and emergency repairs from contractors in your neighborhood",
                 color: "text-green-500",
                 bgColor: "bg-green-50"
               },
               {
                 title: "Competitive Pricing",
-                description: "Local market rates with no excessive travel fees or markup costs",
+                description: "Fair local rates without high travel costs or markup fees",
                 color: "text-orange-500",
                 bgColor: "bg-orange-50"
               },
               {
                 title: "Quality Materials",
-                description: "Selection of materials suited to your local climate and building codes",
+                description: "Access to materials suited for your local climate and building requirements",
                 color: "text-purple-500",
                 bgColor: "bg-purple-50"
               },
               {
                 title: "Local References",
-                description: "Verifiable references from projects in your neighborhood and community",
+                description: "Verifiable work history and references from neighbors in your community",
                 color: "text-indigo-500",
                 bgColor: "bg-indigo-50"
               },
               {
-                title: "After-Sale Service",
-                description: "Ongoing support and warranties from established local contractors",
+                title: "Ongoing Support",
+                description: "Long-term warranties and service from established local businesses",
                 color: "text-red-500",
                 bgColor: "bg-red-50"
               }
@@ -208,25 +208,25 @@ function LocalRoofingPage() {
         </div>
       </section>
 
-      {/* Local Stats Section */}
+      {/* Stats Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Our Local Impact
+              Trusted by Homeowners Nationwide
             </h2>
             <p className="text-xl text-gray-600">
-              Real results for homeowners across America
+              Real results from real customers across America
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl lg:text-5xl font-bold text-orange-500 mb-3">50,000+</div>
-              <div className="text-gray-600 font-medium">Local Projects</div>
+              <div className="text-4xl lg:text-5xl font-bold text-orange-500 mb-3">10,000+</div>
+              <div className="text-gray-600 font-medium">Projects Completed</div>
             </div>
             <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl lg:text-5xl font-bold text-green-500 mb-3">2,500+</div>
-              <div className="text-gray-600 font-medium">Local Contractors</div>
+              <div className="text-4xl lg:text-5xl font-bold text-green-500 mb-3">500+</div>
+              <div className="text-gray-600 font-medium">Verified Contractors</div>
             </div>
             <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-shadow">
               <div className="text-4xl lg:text-5xl font-bold text-blue-500 mb-3">4.9★</div>
@@ -244,19 +244,19 @@ function LocalRoofingPage() {
       <section className="py-20 px-4 bg-gray-900 text-white">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            Ready to Compare Local Prices?
+            Ready to Get Your Roofing Quotes?
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Connect with the best local roofing contractors and save on your project
+            Connect with the best roofing contractors in your area and save on your project
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <div className="flex items-center space-x-2 text-green-400">
               <CheckCircle className="w-5 h-5" />
-              <span>Licensed Local Contractors</span>
+              <span>Licensed & Insured</span>
             </div>
             <div className="flex items-center space-x-2 text-blue-400">
               <CheckCircle className="w-5 h-5" />
-              <span>Competitive Local Pricing</span>
+              <span>Competitive Pricing</span>
             </div>
             <div className="flex items-center space-x-2 text-orange-400">
               <CheckCircle className="w-5 h-5" />
@@ -269,4 +269,4 @@ function LocalRoofingPage() {
   )
 }
 
-export default LocalRoofingPage;
+export default RoofingContractorsPage;
