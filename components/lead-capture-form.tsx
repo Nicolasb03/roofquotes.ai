@@ -39,6 +39,52 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
     setShowForm(false)
     
     try {
+      // Calculate pricing data if not already available
+      let calculatedPricingData = pricingData
+      
+      if (!calculatedPricingData) {
+        console.log('⚠️ No pricing data available, calculating now...')
+        try {
+          const pricingResponse = await fetch('/api/pricing', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              roofArea: roofData.roofArea,
+              roofMaterial: userAnswers.roofMaterial || 'asphalt',
+              complexity: roofData.pitchComplexity || 'moderate',
+              access: userAnswers.propertyAccess || 'easy',
+              condition: userAnswers.roofConditions || [],
+              address: roofData.address
+            }),
+          })
+          
+          if (pricingResponse.ok) {
+            calculatedPricingData = await pricingResponse.json()
+            console.log('✅ Pricing calculated:', calculatedPricingData)
+          } else {
+            // Fallback pricing
+            calculatedPricingData = {
+              lowEstimate: roofData.roofArea * 8,
+              highEstimate: roofData.roofArea * 12,
+              averageEstimate: roofData.roofArea * 10,
+              materialType: 'Standard'
+            }
+            console.log('⚠️ Using fallback pricing:', calculatedPricingData)
+          }
+        } catch (pricingError) {
+          console.error('Pricing calculation error:', pricingError)
+          // Fallback pricing
+          calculatedPricingData = {
+            lowEstimate: roofData.roofArea * 8,
+            highEstimate: roofData.roofArea * 12,
+            averageEstimate: roofData.roofArea * 10,
+            materialType: 'Standard'
+          }
+        }
+      }
+      
       // Prepare complete lead data with user input
       const leadPayload = {
         firstName: formData.firstName,
@@ -47,7 +93,7 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
         phone: formData.phone,
         roofData,
         userAnswers,
-        pricingData
+        pricingData: calculatedPricingData
       }
       
       console.log('CALLING /api/leads with payload:', leadPayload)
@@ -90,17 +136,19 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
       console.log('Response OK, parsing JSON...')
       const result = await response.json()
       console.log('LEAD SUBMITTED SUCCESSFULLY:', result)
-      setPricingData(result.pricingData)
-      onComplete(result.pricingData)
+      setPricingData(calculatedPricingData)
+      onComplete(calculatedPricingData)
       setIsSubmitted(true)
       
     } catch (error) {
       console.error('CRITICAL ERROR submitting lead:', error)
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      })
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        })
+      }
       // Still show success to user, but log the error
       setIsSubmitted(true)
     } finally {

@@ -4,6 +4,10 @@ import { trackLead } from "@/lib/meta-conversion-api"
 
 export async function POST(request: NextRequest) {
   console.log('🚨🚨🚨 WEBHOOK ENDPOINT CALLED - THIS SHOULD APPEAR IN LOGS 🚨🚨🚨')
+  console.log('🕐 Timestamp:', new Date().toISOString())
+  console.log('🌍 Request URL:', request.url)
+  console.log('📍 Request method:', request.method)
+  console.log('🔍 Request headers:', Object.fromEntries(request.headers.entries()))
   
   // Check for Vercel automation bypass
   const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET
@@ -13,6 +17,7 @@ export async function POST(request: NextRequest) {
   
   try {
     const leadData = await request.json()
+    console.log('📦 Raw request body received, size:', JSON.stringify(leadData).length, 'bytes')
     
     console.log('🎯 WEBHOOK ENDPOINT: RECEIVED PAYLOAD FROM LEADS API:')
     console.log('📥 WEBHOOK: Full received payload:', JSON.stringify(leadData, null, 2))
@@ -117,7 +122,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get webhook URLs from environment
-    const webhookUrlsEnv = process.env.WEBHOOK_URLS || 'https://hook.us2.make.com/hkh6cvtrgbswwecam6gmul9plxtgk98m'
+    const webhookUrlsEnv = process.env.WEBHOOK_URLS
     console.log('🔍 Environment check - WEBHOOK_URLS configured:', webhookUrlsEnv ? 'YES' : 'NO')
     console.log('🔗 Using webhook URL:', webhookUrlsEnv)
     
@@ -274,7 +279,7 @@ export async function POST(request: NextRequest) {
 
 export async function TEST(request: NextRequest) {
   try {
-    const webhookUrlsEnv = process.env.WEBHOOK_URLS || 'https://hook.us2.make.com/hkh6cvtrgbswwecam6gmul9plxtgk98m'
+    const webhookUrlsEnv = process.env.WEBHOOK_URLS
     console.log('🔍 Environment check - WEBHOOK_URLS configured:', webhookUrlsEnv ? 'YES' : 'NO')
     console.log('🔗 Using webhook URL:', webhookUrlsEnv)
     

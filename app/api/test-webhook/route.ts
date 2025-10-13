@@ -3,7 +3,18 @@ import { NextResponse } from "next/server"
 export async function GET() {
   console.log('🧪 Testing Make.com webhook with minimal payload...')
   
-  const webhookUrl = 'https://hook.us2.make.com/hkh6cvtrgbswwecam6gmul9plxtgk98m'
+  const webhookUrl = process.env.WEBHOOK_URLS
+  
+  if (!webhookUrl) {
+    console.error('❌ WEBHOOK_URLS environment variable not configured')
+    return NextResponse.json({
+      success: false,
+      error: 'WEBHOOK_URLS environment variable not configured'
+    }, { status: 500 })
+  }
+  
+  // Get first webhook URL if multiple are configured
+  const firstWebhookUrl = webhookUrl.split(',')[0].trim()
   
   // Ultra simple test payload
   const testPayload = {
@@ -12,10 +23,10 @@ export async function GET() {
   }
   
   try {
-    console.log('📤 Sending test to:', webhookUrl)
+    console.log('📤 Sending test to:', firstWebhookUrl)
     console.log('📦 Payload:', JSON.stringify(testPayload))
     
-    const response = await fetch(webhookUrl, {
+    const response = await fetch(firstWebhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
