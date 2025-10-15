@@ -16,8 +16,10 @@ export async function POST(request: NextRequest) {
   }
   
   try {
+    console.log('📖 About to parse request body...')
     const leadData = await request.json()
     console.log('📦 Raw request body received, size:', JSON.stringify(leadData).length, 'bytes')
+    console.log('✅ Request body parsed successfully')
     
     console.log('🎯 WEBHOOK ENDPOINT: RECEIVED PAYLOAD FROM LEADS API:')
     console.log('📥 WEBHOOK: Full received payload:', JSON.stringify(leadData, null, 2))
@@ -269,10 +271,17 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error("Webhook endpoint error:", error)
+    console.error("💥💥💥 WEBHOOK ENDPOINT ERROR:", error)
+    console.error("Error type:", typeof error)
+    console.error("Error name:", error instanceof Error ? error.name : 'Unknown')
+    console.error("Error message:", error instanceof Error ? error.message : String(error))
+    console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace')
+    
     return NextResponse.json({ 
-      error: "Internal server error",
-      details: error instanceof Error ? error.message : 'Unknown error'
+      error: "Internal server error in webhook endpoint",
+      details: error instanceof Error ? error.message : 'Unknown error',
+      errorType: error instanceof Error ? error.name : typeof error,
+      timestamp: new Date().toISOString()
     }, { status: 500 })
   }
 }
