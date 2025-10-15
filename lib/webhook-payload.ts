@@ -89,8 +89,24 @@ export function buildWebhookPayload(data: {
 }): WebhookPayload {
   const { leadData, roofData, userAnswers, pricingData, metadata } = data
   
-  // Extract address components
+  // Extract address components from the address string
   const addressParts = extractAddressComponents(roofData.address || '')
+  
+  // Try to get postal code from multiple sources
+  const postalCode = addressParts.postalCode || 
+                     roofData.postalCode || 
+                     pricingData.postalCode || 
+                     ''
+  
+  // Try to get state from multiple sources
+  const stateCode = addressParts.stateCode || 
+                    pricingData.stateCode || 
+                    roofData.stateCode || 
+                    ''
+  
+  const state = addressParts.state || 
+                pricingData.state || 
+                (stateCode ? getStateName(stateCode) : '')
   
   // Calculate average estimate
   const averageEstimate = Math.round(
@@ -107,10 +123,10 @@ export function buildWebhookPayload(data: {
     
     property: {
       address: roofData.address || '',
-      city: addressParts.city,
-      state: addressParts.state,
-      stateCode: addressParts.stateCode || pricingData.stateCode,
-      postalCode: addressParts.postalCode,
+      city: addressParts.city || roofData.city || '',
+      state: state,
+      stateCode: stateCode,
+      postalCode: postalCode,
       roofArea: roofData.roofArea || 0,
       buildingHeight: roofData.buildingHeight || 0,
       roofShape: roofData.roofShape,
