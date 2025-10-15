@@ -630,3 +630,24 @@ export function extractStateFromAddress(address: string): string | null {
   
   return stateCodes.includes(lastMatch) ? lastMatch : null
 }
+
+/**
+ * Extract ZIP code from address string
+ */
+export function extractZipCodeFromAddress(address: string): string | null {
+  // Match 5-digit ZIP or ZIP+4 format
+  const zipPatterns = [
+    /\b(\d{5}(?:-\d{4})?)\b/,  // Standard ZIP or ZIP+4
+    /,\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\b/, // After state code
+  ]
+  
+  for (const pattern of zipPatterns) {
+    const match = address.match(pattern)
+    if (match) {
+      // If pattern has 2 groups, return the second (the ZIP)
+      return match.length > 2 ? match[2] : match[1]
+    }
+  }
+  
+  return null
+}

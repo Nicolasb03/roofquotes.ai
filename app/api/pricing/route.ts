@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { calculateQuebecPricing, quebecRoofingMaterials } from "@/lib/quebec-pricing-data"
-import { calculateUSStatePricing, extractStateFromAddress, usStatePricing } from "@/lib/us-state-pricing-data"
+import { calculateUSStatePricing, extractStateFromAddress, extractZipCodeFromAddress, usStatePricing } from "@/lib/us-state-pricing-data"
 
 export async function POST(request: Request) {
   try {
@@ -19,11 +19,12 @@ export async function POST(request: Request) {
       return new NextResponse("Invalid roof area data", { status: 400 })
     }
 
-    // Extract state from address
+    // Extract state and ZIP from address
     const address = roofData.address || userAnswers.address || ""
     const stateCode = extractStateFromAddress(address)
+    const zipCode = extractZipCodeFromAddress(address)
     
-    console.log('[PRICING_POST] Detected state:', stateCode, 'from address:', address)
+    console.log('[PRICING_POST] Detected state:', stateCode, 'ZIP:', zipCode, 'from address:', address)
 
     // Map front-end material choices to internal IDs
     const MATERIAL_MAP: Record<string, string> = {
@@ -109,6 +110,7 @@ export async function POST(request: Request) {
         },
         state: usPricing.state,
         stateCode: stateCode,
+        zipCode: zipCode,
         region: "US",
         complexityScore: complexityFactor * accessFactor * conditionFactor,
         factors: {

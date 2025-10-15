@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       "Adresse courriel (C)": leadData.contact.email,
       "Téléphone (D)": leadData.contact.phone,
       "Adresse (E)": leadData.property.address || "",
-      "Zip code (F)": leadData.property.postalCode || leadData.pricingData?.postalCode || "",
+      "Zip code (F)": leadData.property.postalCode || leadData.pricingData?.zipCode || "",
       "Ville (G)": leadData.property.city || "",
       "État (H)": leadData.property.state || leadData.property.stateCode || "",
       "Superficie du toit (I)": leadData.property.roofArea || 0,

@@ -92,11 +92,12 @@ export function buildWebhookPayload(data: {
   // Extract address components from the address string
   const addressParts = extractAddressComponents(roofData.address || '')
   
-  // Try to get postal code from multiple sources
-  const postalCode = addressParts.postalCode || 
-                     roofData.postalCode || 
-                     pricingData.postalCode || 
-                     ''
+  // Try to get ZIP code from multiple sources
+  const zipCode = addressParts.postalCode || 
+                  roofData.zipCode || 
+                  roofData.postalCode ||
+                  pricingData.zipCode || 
+                  ''
   
   // Try to get state from multiple sources
   const stateCode = addressParts.stateCode || 
@@ -126,7 +127,7 @@ export function buildWebhookPayload(data: {
       city: addressParts.city || roofData.city || '',
       state: state,
       stateCode: stateCode,
-      postalCode: postalCode,
+      postalCode: zipCode,
       roofArea: roofData.roofArea || 0,
       buildingHeight: roofData.buildingHeight || 0,
       roofShape: roofData.roofShape,
