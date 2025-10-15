@@ -24,9 +24,10 @@ export async function POST(request: NextRequest) {
 
       // Send selling house update to webhook
       try {
-        const baseUrl = process.env.VERCEL_URL 
-          ? `https://${process.env.VERCEL_URL}` 
-          : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+        // Use the request's host to avoid redirect issues
+        const host = request.headers.get('host') || 'www.myroofer.ai'
+        const protocol = host.includes('localhost') ? 'http' : 'https'
+        const baseUrl = `${protocol}://${host}`
         
         const webhookPayload = {
           timestamp: new Date().toISOString(),
@@ -116,9 +117,10 @@ export async function POST(request: NextRequest) {
     try {
       console.log('🚨 LEADS API: ENTERING WEBHOOK TRY BLOCK')
       
-      const baseUrl = process.env.VERCEL_URL 
-        ? `https://${process.env.VERCEL_URL}` 
-        : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      // Use the request's host to avoid redirect issues
+      const host = request.headers.get('host') || 'www.myroofer.ai'
+      const protocol = host.includes('localhost') ? 'http' : 'https'
+      const baseUrl = `${protocol}://${host}`
       
       console.log('🌐 LEADS API: Base URL:', baseUrl)
       console.log('📞 LEADS API: Calling webhook at:', `${baseUrl}/api/webhook`)
