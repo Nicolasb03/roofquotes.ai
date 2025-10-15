@@ -633,20 +633,31 @@ export function extractStateFromAddress(address: string): string | null {
 
 /**
  * Extract ZIP code from address string
+ * Prioritizes ZIP codes that appear after state codes to avoid matching street numbers
  */
 export function extractZipCodeFromAddress(address: string): string | null {
-  // Match 5-digit ZIP or ZIP+4 format
-  const zipPatterns = [
-    /\b(\d{5}(?:-\d{4})?)\b/,  // Standard ZIP or ZIP+4
-    /,\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\b/, // After state code
-  ]
+  // Priority 1: ZIP after state code (most reliable)
+  // Matches: "CA 94086" or "MI 48187"
+  const afterStatePattern = /,?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)\b/
+  const afterStateMatch = address.match(afterStatePattern)
+  if (afterStateMatch && afterStateMatch[2]) {
+    return afterStateMatch[2]
+  }
   
-  for (const pattern of zipPatterns) {
-    const match = address.match(pattern)
-    if (match) {
-      // If pattern has 2 groups, return the second (the ZIP)
-      return match.length > 2 ? match[2] : match[1]
-    }
+  // Priority 2: ZIP at the end of the address (common format)
+  // Matches: "...Canton Township, MI 48187" or "...Sunnyvale, CA 94086"
+  const endPattern = /\d{5}(?:-\d{4})?\s*$/
+  const endMatch = address.match(endPattern)
+  if (endMatch) {
+    return endMatch[0].trim()
+  }
+  
+  // Priority 3: ZIP after comma and before end (fallback)
+  // Matches: "...City, 12345" but not street numbers
+  const afterCommaPattern = /,\s*(\d{5}(?:-\d{4})?)\s*$/
+  const afterCommaMatch = address.match(afterCommaPattern)
+  if (afterCommaMatch && afterCommaMatch[1]) {
+    return afterCommaMatch[1]
   }
   
   return null
