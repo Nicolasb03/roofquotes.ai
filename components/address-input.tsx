@@ -13,6 +13,7 @@ interface AddressInputProps {
   onAnalyze?: () => void
   isLoading?: boolean
   className?: string
+  region?: 'us' | 'canada'
 }
 
 export function AddressInput({
@@ -20,6 +21,7 @@ export function AddressInput({
   onAnalyze = () => {},
   isLoading = false,
   className = "",
+  region = 'us',
 }: AddressInputProps) {
   const [address, setAddress] = useState("")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -35,7 +37,7 @@ export function AddressInput({
     isFallback,
     fetchPredictions,
     clearPredictions,
-  } = useAddressAutocomplete()
+  } = useAddressAutocomplete(region)
 
   // Handle input change
   const handleInputChange = (value: string) => {

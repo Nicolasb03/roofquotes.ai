@@ -6,9 +6,16 @@ import { Calculator, TrendingDown, Shield, Clock, Users, CheckCircle, MapPin, Se
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
-export function HeroSection() {
+interface HeroSectionProps {
+  region?: 'us' | 'canada'
+}
+
+export function HeroSection({ region = 'us' }: HeroSectionProps) {
   const router = useRouter()
   const [address, setAddress] = useState("")
+  
+  const isCanada = region === 'canada'
+  const badgeText = isCanada ? '#1 Roofing Quote Platform in Canada' : '#1 Roofing Quote Platform in USA'
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-900">
@@ -29,7 +36,7 @@ export function HeroSection() {
           <div className="text-white text-center lg:text-left order-2 lg:order-1">
             <div className="mb-4 lg:mb-6">
               <Badge className="bg-orange-500 text-white border-orange-500 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium">
-                #1 Roofing Quote Platform in USA
+                {badgeText}
               </Badge>
             </div>
 
@@ -90,12 +97,14 @@ export function HeroSection() {
                 {/* Address Input - Mobile Optimized */}
                 <div className="relative">
                   <AddressInput 
+                    region={region}
                     onAddressSelect={(selectedAddress) => {
                       setAddress(selectedAddress)
                     }}
                     onAnalyze={() => {
                       if (address.trim()) {
-                        router.push(`/analysis?address=${encodeURIComponent(address)}`)
+                        const analysisPath = isCanada ? '/ca/analysis' : '/analysis'
+                        router.push(`${analysisPath}?address=${encodeURIComponent(address)}`)
                       }
                     }}
                     className="w-full"
@@ -107,7 +116,8 @@ export function HeroSection() {
                   onClick={(e) => {
                     e.preventDefault()
                     if (address.trim()) {
-                      router.push(`/analysis?address=${encodeURIComponent(address)}`)
+                      const analysisPath = isCanada ? '/ca/analysis' : '/analysis'
+                      router.push(`${analysisPath}?address=${encodeURIComponent(address)}`)
                     }
                   }}
                   disabled={!address.trim()}

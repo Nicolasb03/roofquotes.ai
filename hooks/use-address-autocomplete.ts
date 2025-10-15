@@ -20,7 +20,7 @@ interface UseAddressAutocompleteReturn {
   clearPredictions: () => void
 }
 
-export function useAddressAutocomplete(): UseAddressAutocompleteReturn {
+export function useAddressAutocomplete(region: 'us' | 'canada' = 'us'): UseAddressAutocompleteReturn {
   const [predictions, setPredictions] = useState<AddressPrediction[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,7 +46,7 @@ export function useAddressAutocomplete(): UseAddressAutocompleteReturn {
     // Debounce the API call
     debounceRef.current = setTimeout(async () => {
       try {
-        const response = await fetch(`/api/places/autocomplete?input=${encodeURIComponent(input)}`)
+        const response = await fetch(`/api/places/autocomplete?input=${encodeURIComponent(input)}&region=${region}`)
 
         if (!response.ok) {
           throw new Error("Failed to fetch predictions")
@@ -71,7 +71,7 @@ export function useAddressAutocomplete(): UseAddressAutocompleteReturn {
         setIsLoading(false)
       }
     }, 300) // 300ms debounce
-  }, [])
+  }, [region])
 
   const clearPredictions = useCallback(() => {
     setPredictions([])

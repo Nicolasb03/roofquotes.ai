@@ -4,6 +4,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const input = searchParams.get("input")
+    const region = searchParams.get("region") || "us" // Default to US
 
     if (!input || input.length < 3) {
       return NextResponse.json({ predictions: [] })
@@ -23,17 +24,21 @@ export async function GET(request: NextRequest) {
       ) // Return 200 to avoid breaking the UI
     }
 
-    // Configure for US addresses
+    // Configure based on region
+    const isCanada = region === 'canada'
+    const countryCode = isCanada ? 'ca' : 'us'
+    const centerCoords = isCanada ? '56.1304,-106.3468' : '39.8283,-98.5795' // Canada center vs US center
+    const radiusKm = isCanada ? '2500000' : '2000000' // Larger radius for Canada
+    
     const params = new URLSearchParams({
       input: input,
       key: GOOGLE_API_KEY,
       types: "address",
-      components: "country:us", // Restrict to United States
-      language: "en", // English language for US
-      region: "us", // US region
-      // Bias towards US center coordinates
-      location: "39.8283,-98.5795", // Geographic center of US
-      radius: "2000000", // 2000km radius to cover entire US
+      components: `country:${countryCode}`,
+      language: "en",
+      region: countryCode,
+      location: centerCoords,
+      radius: radiusKm,
     })
 
     const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?${params}`
@@ -57,8 +62,8 @@ export async function GET(request: NextRequest) {
 
     if (data.status === "REQUEST_DENIED") {
       console.error("Places API REQUEST_DENIED:", data.error_message)
-      // Return fallback suggestions for common US cities
-      const fallbackSuggestions = getFallbackSuggestions(input)
+      // Return fallback suggestions based on region
+      const fallbackSuggestions = getFallbackSuggestions(input, isCanada)
       return NextResponse.json({
         predictions: fallbackSuggestions,
         fallback: true,
@@ -68,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
       console.error("Places API error:", data.status, data.error_message)
-      const fallbackSuggestions = getFallbackSuggestions(input)
+      const fallbackSuggestions = getFallbackSuggestions(input, isCanada)
       return NextResponse.json({
         predictions: fallbackSuggestions,
         fallback: true,
@@ -89,7 +94,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Autocomplete error:", error)
     const input = new URL(request.url).searchParams.get("input") || ""
-    const fallbackSuggestions = getFallbackSuggestions(input)
+    const region = new URL(request.url).searchParams.get("region") || "us"
+    const isCanada = region === 'canada'
+    const fallbackSuggestions = getFallbackSuggestions(input, isCanada)
     return NextResponse.json({
       predictions: fallbackSuggestions,
       fallback: true,
@@ -98,8 +105,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Fallback suggestions for common US locations
-function getFallbackSuggestions(input: string) {
+// Fallback suggestions for common locations
+function getFallbackSuggestions(input: string, isCanada: boolean = false) {
   const commonUSCities = [
     "New York, NY, USA",
     "Los Angeles, CA, USA",
@@ -121,19 +128,34 @@ function getFallbackSuggestions(input: string) {
     "Seattle, WA, USA",
     "Denver, CO, USA",
     "Boston, MA, USA",
-    "El Paso, TX, USA",
-    "Nashville, TN, USA",
-    "Detroit, MI, USA",
-    "Oklahoma City, OK, USA",
-    "Portland, OR, USA",
-    "Las Vegas, NV, USA",
-    "Memphis, TN, USA",
-    "Louisville, KY, USA",
-    "Baltimore, MD, USA",
-    "Milwaukee, WI, USA",
+  ]
+  
+  const commonCanadianCities = [
+    "Toronto, ON, Canada",
+    "Montreal, QC, Canada",
+    "Vancouver, BC, Canada",
+    "Calgary, AB, Canada",
+    "Edmonton, AB, Canada",
+    "Ottawa, ON, Canada",
+    "Winnipeg, MB, Canada",
+    "Quebec City, QC, Canada",
+    "Hamilton, ON, Canada",
+    "Kitchener, ON, Canada",
+    "London, ON, Canada",
+    "Victoria, BC, Canada",
+    "Halifax, NS, Canada",
+    "Oshawa, ON, Canada",
+    "Windsor, ON, Canada",
+    "Saskatoon, SK, Canada",
+    "Regina, SK, Canada",
+    "St. John's, NL, Canada",
+    "Kelowna, BC, Canada",
+    "Barrie, ON, Canada",
   ]
 
-  const filtered = commonUSCities
+  const cities = isCanada ? commonCanadianCities : commonUSCities
+
+  const filtered = cities
     .filter((city) => city.toLowerCase().includes(input.toLowerCase()))
     .slice(0, 5)
     .map((city, index) => ({
