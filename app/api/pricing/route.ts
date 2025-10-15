@@ -24,7 +24,10 @@ export async function POST(request: Request) {
     const stateCode = extractStateFromAddress(address)
     const zipCode = extractZipCodeFromAddress(address)
     
-    console.log('[PRICING_POST] Detected state:', stateCode, 'ZIP:', zipCode, 'from address:', address)
+    console.log('[PRICING_POST] 🔍 Address received:', address)
+    console.log('[PRICING_POST] 🔍 Detected state:', stateCode)
+    console.log('[PRICING_POST] 🔍 Detected ZIP:', zipCode)
+    console.log('[PRICING_POST] 🔍 roofData object:', JSON.stringify(roofData, null, 2))
 
     // Map front-end material choices to internal IDs
     const MATERIAL_MAP: Record<string, string> = {
