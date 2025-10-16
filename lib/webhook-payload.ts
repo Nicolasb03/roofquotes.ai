@@ -49,6 +49,7 @@ export interface WebhookPayload {
     region: string
     state?: string
     stateCode?: string
+    zipCode?: string
     complexityScore: number
     factors?: {
       roofComplexity: string
@@ -156,6 +157,7 @@ export function buildWebhookPayload(data: {
       region: pricingData.region || pricingData.province || 'US',
       state: pricingData.state,
       stateCode: pricingData.stateCode,
+      zipCode: pricingData.zipCode || zipCode,
       complexityScore: pricingData.complexityScore || 1.0,
       factors: pricingData.factors
     },

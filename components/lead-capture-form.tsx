@@ -51,12 +51,8 @@ export function LeadCaptureForm({ roofData, userAnswers, leadData, onComplete }:
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              roofArea: roofData.roofArea,
-              roofMaterial: userAnswers.roofMaterial || 'asphalt',
-              complexity: roofData.pitchComplexity || 'moderate',
-              access: userAnswers.propertyAccess || 'easy',
-              condition: userAnswers.roofConditions || [],
-              address: roofData.address
+              roofData: roofData,
+              userAnswers: userAnswers
             }),
           })
           
