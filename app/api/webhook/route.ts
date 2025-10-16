@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       "Adresse (E)": leadData.property.address || "",
       "Zip code (F)": leadData.property.postalCode || "",
       "Ville (G)": leadData.property.city || "",
-      "État (H)": leadData.property.state || leadData.property.stateCode || "",
+      "État (H)": leadData.property.stateCode || leadData.property.state || "",
       "Superficie du toit (I)": leadData.property.roofArea || 0,
       "Hauteur du bâtiment (J)": leadData.property.buildingHeight || 0,
       "Condition particulières (K)": roofConditions,
