@@ -13,6 +13,7 @@ interface HeroSectionProps {
 export function HeroSection({ region = 'us' }: HeroSectionProps) {
   const router = useRouter()
   const [address, setAddress] = useState("")
+  const [addressData, setAddressData] = useState<any>(null)
   
   const isCanada = region === 'canada'
   const badgeText = isCanada ? '#1 Roofing Quote Platform in Canada' : '#1 Roofing Quote Platform in USA'
@@ -98,13 +99,21 @@ export function HeroSection({ region = 'us' }: HeroSectionProps) {
                 <div className="relative">
                   <AddressInput 
                     region={region}
-                    onAddressSelect={(selectedAddress) => {
+                    onAddressSelect={(selectedAddress, data) => {
                       setAddress(selectedAddress)
+                      setAddressData(data)
+                      console.log('📍 Address data captured:', data)
                     }}
                     onAnalyze={() => {
                       if (address.trim()) {
                         const analysisPath = isCanada ? '/ca/analysis' : '/analysis'
-                        router.push(`${analysisPath}?address=${encodeURIComponent(address)}`)
+                        const params = new URLSearchParams({
+                          address: address
+                        })
+                        if (addressData) {
+                          params.set('addressData', JSON.stringify(addressData))
+                        }
+                        router.push(`${analysisPath}?${params.toString()}`)
                       }
                     }}
                     className="w-full"
@@ -117,7 +126,13 @@ export function HeroSection({ region = 'us' }: HeroSectionProps) {
                     e.preventDefault()
                     if (address.trim()) {
                       const analysisPath = isCanada ? '/ca/analysis' : '/analysis'
-                      router.push(`${analysisPath}?address=${encodeURIComponent(address)}`)
+                      const params = new URLSearchParams({
+                        address: address
+                      })
+                      if (addressData) {
+                        params.set('addressData', JSON.stringify(addressData))
+                      }
+                      router.push(`${analysisPath}?${params.toString()}`)
                     }
                   }}
                   disabled={!address.trim()}

@@ -93,12 +93,28 @@ export function buildWebhookPayload(data: {
   // Extract address components from the address string
   const addressParts = extractAddressComponents(roofData.address || '')
   
-  // Try to get ZIP code from multiple sources
-  const zipCode = addressParts.postalCode || 
-                  roofData.zipCode || 
+  // Debug logging
+  console.log('🔍 Address parsing:', {
+    originalAddress: roofData.address,
+    extractedParts: addressParts,
+    roofDataZip: roofData.zipCode,
+    roofDataPostal: roofData.postalCode,
+    pricingDataZip: pricingData.zipCode
+  })
+  
+  // Try to get ZIP code from multiple sources (prioritize roofData.zipCode from Google Places)
+  const zipCode = roofData.zipCode ||           // From Google Places API (highest priority)
                   roofData.postalCode ||
+                  addressParts.postalCode ||     // From address parsing
                   pricingData.zipCode || 
                   ''
+  
+  console.log('✅ Final ZIP code selected:', zipCode, 'from sources:', {
+    roofDataZip: roofData.zipCode,
+    roofDataPostal: roofData.postalCode,
+    extractedPostal: addressParts.postalCode,
+    pricingZip: pricingData.zipCode
+  })
   
   // Try to get state from multiple sources
   const stateCode = addressParts.stateCode || 

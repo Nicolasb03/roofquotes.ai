@@ -92,13 +92,22 @@ export async function POST(request: NextRequest) {
           : leadData.projectDetails.roofConditions)
       : ""
     
+    // Debug: Log property data to see what we're receiving
+    console.log('🔍 Property data received:', {
+      address: leadData.property.address,
+      postalCode: leadData.property.postalCode,
+      city: leadData.property.city,
+      state: leadData.property.state,
+      stateCode: leadData.property.stateCode
+    })
+    
     const webhookPayload = {
       "Prénom (A)": leadData.contact.firstName,
       "Nom (B)": leadData.contact.lastName,
       "Adresse courriel (C)": leadData.contact.email,
       "Téléphone (D)": leadData.contact.phone,
       "Adresse (E)": leadData.property.address || "",
-      "Code postal (F)": leadData.property.postalCode || "",
+      "Zip code (F)": leadData.property.postalCode || "",
       "Ville (G)": leadData.property.city || "",
       "État (H)": leadData.property.state || leadData.property.stateCode || "",
       "Superficie du toit (I)": leadData.property.roofArea || 0,

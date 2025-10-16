@@ -35,6 +35,7 @@ export default function AnalysisPage() {
 
   const address = useMemo(() => searchParams.get("address") || "", [searchParams])
   const dataParam = useMemo(() => searchParams.get("data"), [searchParams])
+  const addressDataParam = useMemo(() => searchParams.get("addressData"), [searchParams])
 
   useEffect(() => {
     if (hasAnalyzed || !address) return
@@ -68,7 +69,26 @@ export default function AnalysisPage() {
         }
 
         const data = await response.json()
-        setRoofData({ ...data.roofData, address })
+        
+        // Parse addressData if available
+        let parsedAddressData = null
+        if (addressDataParam) {
+          try {
+            parsedAddressData = JSON.parse(addressDataParam)
+            console.log('📍 Parsed address data from URL:', parsedAddressData)
+          } catch (e) {
+            console.error('Error parsing addressData:', e)
+          }
+        }
+        
+        setRoofData({ 
+          ...data.roofData, 
+          address,
+          zipCode: parsedAddressData?.postalCode,
+          city: parsedAddressData?.city,
+          state: parsedAddressData?.state,
+          stateCode: parsedAddressData?.stateCode
+        })
         setCurrentStep("results")
       } catch (error) {
         console.error("Roof analysis error:", error)

@@ -8,8 +8,20 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useAddressAutocomplete } from "@/hooks/use-address-autocomplete"
 
+interface AddressData {
+  formattedAddress: string
+  streetNumber?: string
+  route?: string
+  city?: string
+  state?: string
+  stateCode?: string
+  postalCode?: string
+  country?: string
+  countryCode?: string
+}
+
 interface AddressInputProps {
-  onAddressSelect?: (address: string) => void
+  onAddressSelect?: (address: string, addressData?: AddressData) => void
   onAnalyze?: () => void
   isLoading?: boolean
   className?: string
@@ -55,11 +67,33 @@ export function AddressInput({
   }
 
   // Handle prediction selection
-  const handlePredictionSelect = (prediction: any) => {
+  const handlePredictionSelect = async (prediction: any) => {
     setAddress(prediction.description)
-    onAddressSelect?.(prediction.description)
     setIsDropdownOpen(false)
     clearPredictions()
+    
+    // Fetch detailed address data if we have a place_id
+    if (prediction.place_id && !prediction.fallback) {
+      try {
+        const response = await fetch(`/api/places/details?place_id=${encodeURIComponent(prediction.place_id)}`)
+        if (response.ok) {
+          const data = await response.json()
+          console.log('📍 Place details received:', data.addressData)
+          onAddressSelect?.(prediction.description, data.addressData)
+        } else {
+          // Fallback to just the description
+          onAddressSelect?.(prediction.description)
+        }
+      } catch (error) {
+        console.error('Error fetching place details:', error)
+        // Fallback to just the description
+        onAddressSelect?.(prediction.description)
+      }
+    } else {
+      // Fallback suggestion, just use description
+      onAddressSelect?.(prediction.description)
+    }
+    
     inputRef.current?.focus()
   }
 
