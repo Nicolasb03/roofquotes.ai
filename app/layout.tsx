@@ -94,6 +94,20 @@ export default function RootLayout({
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJSM6DLY6L"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-QJSM6DLY6L');
+            `
+          }}
+        />
+        {/* End Google Analytics */}
+        
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
