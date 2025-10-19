@@ -103,17 +103,22 @@ export async function POST(request: NextRequest) {
     })
     
     // Ensure address is always a string (fix for Close CRM "[object Object]" error)
-    const addressString = typeof leadData.property.address === 'string' 
+    let addressString = typeof leadData.property.address === 'string' 
       ? leadData.property.address 
       : (leadData.property.address?.formatted_address || 
          leadData.property.address?.description || 
          JSON.stringify(leadData.property.address) || 
          "")
     
+    // Extract only street address (remove city, state, zip) for Close CRM compatibility
+    // Format: "123 Main St, City, ST 12345" -> "123 Main St"
+    const streetAddressOnly = addressString.split(',')[0].trim()
+    
     console.log('📍 Address conversion:', {
       original: leadData.property.address,
-      converted: addressString,
-      type: typeof addressString
+      fullAddress: addressString,
+      streetOnly: streetAddressOnly,
+      type: typeof streetAddressOnly
     })
     
     const webhookPayload = {
@@ -121,7 +126,7 @@ export async function POST(request: NextRequest) {
       "Nom (B)": leadData.contact.lastName,
       "Adresse courriel (C)": leadData.contact.email,
       "Téléphone (D)": leadData.contact.phone,
-      "Adresse (E)": addressString,
+      "Adresse (E)": streetAddressOnly,
       "Zip code (F)": leadData.property.postalCode || "",
       "Ville (G)": leadData.property.city || "",
       "État (H)": leadData.property.stateCode || leadData.property.state || "",
