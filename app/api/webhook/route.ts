@@ -95,10 +95,25 @@ export async function POST(request: NextRequest) {
     // Debug: Log property data to see what we're receiving
     console.log('🔍 Property data received:', {
       address: leadData.property.address,
+      addressType: typeof leadData.property.address,
       postalCode: leadData.property.postalCode,
       city: leadData.property.city,
       state: leadData.property.state,
       stateCode: leadData.property.stateCode
+    })
+    
+    // Ensure address is always a string (fix for Close CRM "[object Object]" error)
+    const addressString = typeof leadData.property.address === 'string' 
+      ? leadData.property.address 
+      : (leadData.property.address?.formatted_address || 
+         leadData.property.address?.description || 
+         JSON.stringify(leadData.property.address) || 
+         "")
+    
+    console.log('📍 Address conversion:', {
+      original: leadData.property.address,
+      converted: addressString,
+      type: typeof addressString
     })
     
     const webhookPayload = {
@@ -106,7 +121,7 @@ export async function POST(request: NextRequest) {
       "Nom (B)": leadData.contact.lastName,
       "Adresse courriel (C)": leadData.contact.email,
       "Téléphone (D)": leadData.contact.phone,
-      "Adresse (E)": leadData.property.address || "",
+      "Adresse (E)": addressString,
       "Zip code (F)": leadData.property.postalCode || "",
       "Ville (G)": leadData.property.city || "",
       "État (H)": leadData.property.stateCode || leadData.property.state || "",

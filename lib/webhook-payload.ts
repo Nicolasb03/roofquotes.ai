@@ -131,6 +131,13 @@ export function buildWebhookPayload(data: {
     (pricingData.lowEstimate + pricingData.highEstimate) / 2
   )
   
+  // Ensure address is always a string (fix for Close CRM compatibility)
+  const addressString = typeof roofData.address === 'string'
+    ? roofData.address
+    : (roofData.address?.formatted_address || 
+       roofData.address?.description || 
+       '')
+  
   return {
     contact: {
       firstName: leadData.firstName,
@@ -140,7 +147,7 @@ export function buildWebhookPayload(data: {
     },
     
     property: {
-      address: roofData.address || '',
+      address: addressString,
       city: addressParts.city || roofData.city || '',
       state: state,
       stateCode: stateCode,
